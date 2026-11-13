@@ -55,13 +55,20 @@ Running log of decisions, progress and facts verified so far. Newest entries at 
 - **Testnet:** Diana will not be reset before judging ends 15 Dec; upgrades keep state and are announced.
 - **Q-Day Drill:** open to all categories; register on the project page before 17 Nov 23:59 UTC. Any successful tx from the drill account during the drill counts (hybrid native transfer OK); a real project action is better.
 
+## Q-Day Drill — organizer answers (13 Nov) and our plan
+- They want the drill account's **ECDSA private key** (64 hex). Stored encrypted, given to the attacker bot on 18 Nov, **published with the attack log afterwards**. Ours is in `ops/drill.key` (gitignored); the user enters it on the project page.
+- Normal tx: any successful tx from the drill account between **18 Nov 00:00–23:59 UTC** (native or EVM). Submit the hash on the project page (accepted during the drill and the day after).
+- Window open/closed is our choice and is what the drill measures. No window → attacker can do nothing on the EVM lane. Open window → attacker gets whatever it allows. Tightly scoped to our own contracts = realistic; explain the scoping in the threat model (jury uses it to break ties).
+- Vault listing is fine. The bot calls drain-style functions on it from the drill account (withdraw, withdrawAll, emergencyWithdraw, withdraw(amount), withdrawTo, execute). Refusals show as **blocked** = good for us. They only reach the contract if the drill window covers it.
+- **Our plan:** on 18 Nov open the drill window scoped to the vault only (`--targets <vault>`, few txs, ~1 QOR). Drain calls reach LeashedVault and revert (`NotOwner`/`NotOperator`). Keep the drill balance small. Normal tx = a real project action (fUSD convert into the vault, or a hybrid QOR send). Capture the attack log for the video and README.
+
 ## Accounts (public addresses only — never put keys here)
 | Role | qor1 address | 0x address | ML-DSA registered | Notes |
 |---|---|---|---|---|
 | Owner/CFO | qor139tww2lgnls9vucxdmq02s6cass60d3ukctyze | _TBD_ | ? | QoreX mobile wallet, 100 QOR |
 | Owner (unified, ops) | qor1xej57n223fmthypae2h7g3um4w4adswu3pc5wp | 0x36654F4d4a8A76bb903dcAAfe4479BabAbd6c1DC | **yes** (tx E99A89CC…8379) | Vault owner/CFO. Funded 10 QOR. Window opened 13 Nov (tx 4388746F…EE44): 17,280 blocks from height 9,997,353, 20 txs, 3 QOR, unscoped |
 | Agent operator | qor17eysm9ywfj9tcgayhnrfn3r43xwljhh04ccq3g | 0xf6490d948e4C8aBC23a4BCC699C475899dF95EeF | **yes** (dilithium5, possession proven) | Unified (eth_secp256k1), created 13 Nov via ops/new-account.mjs |
-| Drill account | qor1hdz92mycj3h7tcncsjx7uaxpaurjhgh9fuel5y | 0xbB44556C98946FE5E278848Dee74C1eF072Ba2E5 | **yes** (dilithium5, possession proven, tx DC46E510…5E86) | Created 13 Nov, funded 5 QOR from QoreX (tx 4B78F808…AC9F). Fresh, throwaway. **Form not yet submitted (closes 17 Nov 23:59).** |
+| Drill account | qor1hdz92mycj3h7tcncsjx7uaxpaurjhgh9fuel5y | 0xbB44556C98946FE5E278848Dee74C1eF072Ba2E5 | **yes** (dilithium5, possession proven, tx DC46E510…5E86) | Created 13 Nov, funded 5 QOR from QoreX (tx 4B78F808…AC9F). Fresh, throwaway. **Registration on the project page not yet submitted (closes 17 Nov 23:59 UTC).** Private key in `ops/drill.key`. |
 
 ## Deployed contracts (testnet)
 | Contract | Address | Tx | Date |
