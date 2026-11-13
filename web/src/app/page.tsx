@@ -55,9 +55,9 @@ function LiveStats() {
     [d?.window ? (d.window.live ? `${d.window.remaining_txs} txs` : "closed") : "—", "left on the PQC leash"],
   ];
   return (
-    <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={5} className="mt-auto flex flex-wrap gap-3 pt-12">
+    <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={5} className="mt-auto flex flex-wrap gap-3 pt-4">
       {items.map(([v, l]) => (
-        <div key={l} className="rounded-2xl px-5 py-3.5" style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(25,40,55,0.08)", backdropFilter: "blur(10px)" }}>
+        <div key={l} className="rounded-2xl px-5 py-2.5" style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(25,40,55,0.08)", backdropFilter: "blur(10px)" }}>
           <p style={{ fontFamily: "var(--font-heading)", fontSize: 22, letterSpacing: "-0.01em" }}>{v}</p>
           <p className="text-xs" style={{ opacity: 0.6 }}>{l}</p>
         </div>
@@ -71,11 +71,11 @@ export default function Landing() {
 
   return (
     <div style={{ fontFamily: "var(--font-body)", color: "var(--color-text)", background: "#F2F2EE" }}>
-    <div className="relative min-h-screen w-full overflow-hidden">
+    <div className="relative flex min-h-[100svh] w-full flex-col overflow-hidden md:h-[100svh] md:min-h-[620px]">
       <video className="absolute inset-0 h-full w-full object-cover" src={VIDEO} autoPlay muted loop playsInline />
 
       {/* Navbar */}
-      <nav className="relative z-10 mx-auto flex max-w-[1280px] items-center justify-between px-5 py-4 sm:px-8 sm:py-5">
+      <nav className="relative z-10 mx-auto flex w-full max-w-[1280px] items-center justify-between px-5 py-4 sm:px-8 sm:py-5">
         <Link href="/" aria-label="Leashed home" className="flex items-center gap-2.5">
           <Logo />
           <span style={{ fontFamily: "var(--font-heading)", fontSize: 22, letterSpacing: "-0.02em" }}>Leashed<span style={{ color: "#7342E2" }}>.</span></span>
@@ -117,32 +117,32 @@ export default function Landing() {
       </AnimatePresence>
 
       {/* Hero */}
-      <main className="relative z-10 mx-auto flex min-h-[calc(100vh-88px)] max-w-[1280px] flex-col px-5 pb-8 sm:px-8">
-        <div style={{ maxWidth: 640, paddingTop: "clamp(40px, 9vh, 96px)" }}>
+      <main className="relative z-10 mx-auto flex min-h-0 w-full max-w-[1280px] flex-1 flex-col px-5 pb-[3vh] sm:px-8">
+        <div style={{ maxWidth: 640, paddingTop: "clamp(8px, 4vh, 72px)" }}>
           <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0}
-            className="mb-6 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium"
+            className="mb-[2.5vh] inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium"
             style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(25,40,55,0.08)", backdropFilter: "blur(8px)" }}>
             <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" style={{ background: "#22c55e" }} /><span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: "#22c55e" }} /></span>
             Live on QoreChain testnet · Post-Quantum AI Agents
           </motion.div>
 
           <motion.h1 variants={fadeUp} initial="hidden" animate="visible" custom={1}
-            style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(3.5rem, 10vw, 7rem)", lineHeight: 0.95, letterSpacing: "-0.04em", color: "#192837" }}>
+            style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(3rem, min(10vw, 12.5vh), 7rem)", lineHeight: 0.95, letterSpacing: "-0.04em", color: "#192837" }}>
             Leashed<span style={{ color: "#7342E2" }}>.</span>
           </motion.h1>
 
           <motion.h2 variants={fadeUp} initial="hidden" animate="visible" custom={2}
-            style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.4rem, 3.2vw, 2.25rem)", lineHeight: 1.15, letterSpacing: "-0.01em", color: "#192837", marginTop: 20, marginBottom: 20, textWrap: "balance" }}>
+            style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.25rem, min(3.2vw, 4.3vh), 2.25rem)", lineHeight: 1.15, letterSpacing: "-0.01em", color: "#192837", marginTop: "2vh", marginBottom: "2vh", textWrap: "balance" }}>
             <Zap style={iconStyle} /> Let AI run your treasury<br className="hidden sm:block" />{" "}
             on a post-quantum leash <LockKeyhole style={iconStyle} />
           </motion.h2>
 
           <motion.p variants={fadeUp} initial="hidden" animate="visible" custom={3}
-            style={{ fontFamily: "var(--font-body)", fontSize: "clamp(0.95rem, 2.2vw, 1.1rem)", lineHeight: 1.65, opacity: 0.8, maxWidth: 520 }}>
+            style={{ fontFamily: "var(--font-body)", fontSize: "clamp(0.9rem, min(2.2vw, 2.4vh), 1.1rem)", lineHeight: 1.6, opacity: 0.8, maxWidth: 520 }}>
             Zero blind trust, total control. An AI agent pays your vendors on-chain, bounded by a smart contract and an ML-DSA key it can never touch.
           </motion.p>
 
-          <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={4} className="mt-9 flex flex-wrap items-center gap-3">
+          <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={4} className="mt-[3.5vh] flex flex-wrap items-center gap-3">
             <motion.div whileHover={{ scale: 1.04, filter: "brightness(1.1)" }} whileTap={{ scale: 0.96 }} className="inline-block">
               <Link href="/app" className="flex items-center justify-between font-semibold text-white"
                 style={{ background: "#7342E2", borderRadius: 50, padding: "17px 24px", fontFamily: "var(--font-body)", fontSize: "clamp(0.9rem, 2vw, 1rem)", boxShadow: "0 4px 24px rgba(115,66,226,0.28)", minWidth: 210, gap: 32 }}>
