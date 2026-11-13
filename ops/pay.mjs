@@ -2,7 +2,7 @@
 // node pay.mjs request <vendor name|0x…> <amount> [memo] — agent asks the owner to approve a payment above the threshold
 // Agent needs a live EVM window scoped to the vault: node window.mjs agent open --targets <vault>
 // Simulates first, so a policy block prints the vault's reason (e.g. OverPerTxCap) and spends nothing.
-import { parseUnits, formatUnits, keccak256, stringToHex, BaseError, ContractFunctionRevertedError } from "viem";
+import { parseEventLogs, parseUnits, formatUnits, keccak256, stringToHex, BaseError, ContractFunctionRevertedError } from "viem";
 import { loadAccount } from "./lib.mjs";
 import { pub, walletFor, loadDeployments, vaultAbi } from "./evm.mjs";
 
@@ -34,6 +34,10 @@ try {
   const r = await pub.waitForTransactionReceipt({ hash });
   if (r.status !== "success") throw new Error(`reverted on chain: ${hash}`);
   console.log(`  ${fn} ok  tx ${hash}  block ${r.blockNumber}`);
+  if (fn === "request") {
+    const ev = parseEventLogs({ abi, logs: r.logs, eventName: "Requested" })[0];
+    console.log(`  request id ${ev.args.id} — owner approves with: node approvals.mjs approve ${ev.args.id}`);
+  }
   const spent = await pub.readContract({ address: dep.vault, abi, functionName: "spentToday" });
   const bal = await pub.readContract({ address: dep.vault, abi, functionName: "balance" });
   console.log(`  vault: balance ${formatUnits(bal, dep.token.decimals)} fUSD · spent today ${formatUnits(spent, dep.token.decimals)}`);

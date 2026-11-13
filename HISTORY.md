@@ -43,7 +43,7 @@ Running log of decisions, progress and facts verified so far. Newest entries at 
 - Wrote `docs/ARCHITECTURE.md`, `docs/PLAN.md`.
 - Scaffolded `contracts/` (Hardhat): `LeashedVault.sol` + `MockUSD.sol`, **14/14 tests pass**, `scripts/deploy.js`.
 - Scaffolded `web/` (Next.js 15, Tailwind, viem, Anthropic SDK); builds and type-checks. `src/lib/chain.ts` has testnet config.
-- README, MIT LICENSE, .gitignore. `git init` done, **no commits yet**.
+- README, MIT LICENSE, .gitignore. `git init` done; pushed to github.com/hackerjose25/QuoreHack (main).
 - QoreX wallet installed on mobile; wallet created; **100 QOR claimed from faucet**. QoreX auto-registered ML-DSA (dilithium5) but uses a Cosmos (coin-118) key → likely can't sign EVM txs → kept as funding wallet only.
 - Wrote `ops/` scripts (new-account, register, window, status, deploy-vault) on @qorechain/sdk 0.14.0. **First real run worked**: owner + agent unified accounts created, both ML-DSA keys registered, owner window opened.
 - Claude's sandbox can't reach the testnet (TLS issue), so the user runs `ops/` scripts and pastes the output.
@@ -67,6 +67,8 @@ Vault v1 policy: perTx 1000 · daily 2000 · approval above 500 fUSD. Owner 0x36
 Vault v1 vendors (added 13 Nov, cap 500 each): Acme Design 0x2a16…8bb5 (tx 0xe65f…f9a9), CloudHost 0x6851…30D5 (tx 0x2469…9998), DevAgency 0xdbA8…39a2 (tx 0x2943…0333). `fund 3000` first reverted (ERC20InsufficientBalance: owner had no fUSD). QoreX can't send fest tokens, so `ops/qorex-convert.mjs` converted 1000 fUSD from the QoreX wallet's bank balance straight to ERC-20 at the owner 0x (Cosmos tx D31A0DE4…4790; QoreX's ML-DSA key = canonical derivation). Owner then funded the vault: tx 0x1567…8b6b. **Vault balance 1000 fUSD.**
 
 **First agent payment (13 Nov):** agent window opened scoped to the vault only (tx 6DA1E974…BD03, 50 txs, 3 QOR, expiry height 10,018,081). `pay.mjs CloudHost 200` → tx 0xcef9155f9c2be95c82b9de18e4cbf67e56b06f80a4ef76d7fe2ec7061da3e855 (block 10,000,814). Vault now 800 fUSD, spent today 200. `pay.mjs DevAgency 1200` blocked in simulation with NeedsApproval(1200, 500) — nothing spent (approval check runs before the per-tx cap).
+
+**Approval flow (13 Nov):** `pay.mjs request DevAgency 600` → request #0 (tx 0xc46b2dfe…387e). Agent `execute 0` before approval blocked: NotApproved(0). Owner `approvals.mjs approve 0` → tx 0x88827a17…a38b. Agent `execute 0` → tx 0x17cd584e1912b4ee834e802feacc29af46252f1ddc03c0db2376c6836d59f4ff. Vault now **200 fUSD, spent today 800**. Note: approval waives the per-tx cap, but vendor active + daily cap still apply.
 
 ## Blockers
 - ~~13 Nov~~ (resolved later 13 Nov — Claude can now run ops/ scripts directly): Claude's sandbox and web fetcher can't reach `*-testnet.qore.host` — the TLS check fails because the certificate chain isn't trusted (`SEC_E_UNTRUSTED_ROOT` / "unable to verify the first certificate"). On-chain checks must be run by the user in a browser/terminal, or the user must allow the network access.
