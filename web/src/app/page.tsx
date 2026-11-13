@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
-import { ArrowRightCircle, Zap, LockKeyhole, Fingerprint, Menu, X } from "lucide-react";
+import { ArrowRightCircle, Zap, LockKeyhole, Fingerprint, Menu, X, MessageSquareText, ShieldCheck, Send, FileCode2, KeyRound, ArrowUpRight } from "lucide-react";
 
 const VIDEO = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260518_003132_8b7edcb6-c64d-4a52-a9ca-879942e122ad.mp4";
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -11,7 +11,7 @@ const GITHUB = "https://github.com/hackerjose25/QuoreHack";
 const NAV: { label: string; href: string }[] = [
   { label: "Vault", href: "/app" },
   { label: "Agent", href: "/app" },
-  { label: "Leashes", href: `${GITHUB}/blob/main/docs/ARCHITECTURE.md` },
+  { label: "Leashes", href: "#what" },
   { label: "Security", href: `${GITHUB}/blob/main/docs/ARCHITECTURE.md#3-threat-model-what-we-claim-and-only-that` },
   { label: "GitHub", href: GITHUB },
 ];
@@ -70,7 +70,8 @@ export default function Landing() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden" style={{ fontFamily: "var(--font-body)", color: "var(--color-text)" }}>
+    <div style={{ fontFamily: "var(--font-body)", color: "var(--color-text)", background: "#F2F2EE" }}>
+    <div className="relative min-h-screen w-full overflow-hidden">
       <video className="absolute inset-0 h-full w-full object-cover" src={VIDEO} autoPlay muted loop playsInline />
 
       {/* Navbar */}
@@ -159,5 +160,108 @@ export default function Landing() {
         <LiveStats />
       </main>
     </div>
+      <WhatItDoes />
+      <Footer />
+    </div>
+  );
+}
+
+const card: React.CSSProperties = { background: "#fff", border: "1px solid rgba(25,40,55,0.08)", borderRadius: 24, boxShadow: "0 1px 2px rgba(25,40,55,0.04), 0 12px 32px rgba(25,40,55,0.05)" };
+const h2Style: React.CSSProperties = { fontFamily: "var(--font-heading)", fontSize: "clamp(2rem, 5vw, 3.25rem)", lineHeight: 1.05, letterSpacing: "-0.02em", textWrap: "balance" };
+
+const STEPS = [
+  { Icon: MessageSquareText, n: "01", t: "You ask in plain English", d: "“Pay CloudHost 200 fUSD for hosting.” Paste an invoice or type a sentence. The AI agent reads the treasury and picks the right vendor." },
+  { Icon: ShieldCheck, n: "02", t: "The vault rehearses it", d: "Every payment is simulated against the vault first. Wrong vendor, over a cap, or a prompt-injection trick? It is refused, and nothing is spent." },
+  { Icon: Send, n: "03", t: "It pays, or asks you", d: "Small payments go out instantly with a tx hash. Anything above the approval threshold waits for the owner to sign off." },
+];
+
+const LEASHES = [
+  { Icon: FileCode2, tag: "Leash 1 · Smart contract", t: "How much, and to whom", items: ["Whitelisted vendors only", "Per-payment, per-vendor and daily caps", "Owner approval above 500 fUSD", "Instant pause switch"] },
+  { Icon: KeyRound, tag: "Leash 2 · Post-quantum window", t: "Where, how often, how long", items: ["Agent can call the vault and nothing else", "Limited transactions and blocks", "Opened only with the owner’s ML-DSA-87 key", "Close it and the agent stops next block"] },
+];
+
+function WhatItDoes() {
+  const inView = { initial: "hidden", whileInView: "visible", viewport: { once: true, amount: 0.25 } } as const;
+  return (
+    <section id="what" className="mx-auto max-w-[1280px] px-5 py-24 sm:px-8 sm:py-32">
+      <motion.p variants={fadeUp} {...inView} custom={0} className="text-sm font-semibold uppercase tracking-widest" style={{ color: "#7342E2" }}>What it does</motion.p>
+      <motion.h2 variants={fadeUp} {...inView} custom={1} className="mt-3 max-w-3xl" style={h2Style}>
+        An AI treasurer that can pay, but can&apos;t go rogue.
+      </motion.h2>
+      <motion.p variants={fadeUp} {...inView} custom={2} className="mt-5 max-w-2xl" style={{ fontSize: "clamp(0.95rem, 2.2vw, 1.1rem)", lineHeight: 1.65, opacity: 0.75 }}>
+        Leashed lets an AI agent handle everyday vendor payments from an on-chain vault, while two independent leashes make sure it can only ever do what you allowed.
+      </motion.p>
+
+      <div className="mt-14 grid gap-5 md:grid-cols-3">
+        {STEPS.map(({ Icon, n, t, d }, i) => (
+          <motion.div key={n} variants={fadeUp} {...inView} custom={i} whileHover={{ y: -6 }} className="p-7" style={card}>
+            <div className="flex items-center justify-between">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl" style={{ background: "rgba(115,66,226,0.1)", color: "#7342E2" }}><Icon size={22} /></span>
+              <span className="font-mono text-sm" style={{ opacity: 0.35 }}>{n}</span>
+            </div>
+            <h3 className="mt-6" style={{ fontFamily: "var(--font-heading)", fontSize: 22, letterSpacing: "-0.01em" }}>{t}</h3>
+            <p className="mt-2 text-[15px] leading-relaxed" style={{ opacity: 0.7 }}>{d}</p>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="mt-5 grid gap-5 md:grid-cols-2">
+        {LEASHES.map(({ Icon, tag, t, items }, i) => (
+          <motion.div key={tag} variants={fadeUp} {...inView} custom={i} className="relative overflow-hidden p-8"
+            style={{ ...card, background: i ? "#192837" : "#fff", color: i ? "#F2F2EE" : "#192837" }}>
+            <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full" style={{ background: "#7342E2", opacity: i ? 0.35 : 0.08, filter: "blur(40px)" }} />
+            <span className="relative inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest" style={{ color: i ? "#b9a3f5" : "#7342E2" }}><Icon size={16} /> {tag}</span>
+            <h3 className="relative mt-4" style={{ fontFamily: "var(--font-heading)", fontSize: 28, letterSpacing: "-0.01em" }}>{t}</h3>
+            <ul className="relative mt-5 space-y-3 text-[15px]">
+              {items.map((it) => (
+                <li key={it} className="flex items-start gap-3"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: "#7342E2" }} /><span style={{ opacity: 0.8 }}>{it}</span></li>
+              ))}
+            </ul>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  const cols: [string, [string, string][]][] = [
+    ["Product", [["Dashboard", "/app"], ["AI agent", "/app"], ["What it does", "#what"]]],
+    ["Resources", [["GitHub", GITHUB], ["Architecture", `${GITHUB}/blob/main/docs/ARCHITECTURE.md`], ["Build plan", `${GITHUB}/blob/main/docs/PLAN.md`]]],
+    ["Network", [["Explorer", "https://explore.qore.network"], ["Vault contract", "https://explore.qore.network/address/0xd995932bb8e0d6ee2234d4be3989052e8c339bf4"], ["fUSD token", "https://explore.qore.network/address/0x97143B771D34ddb9130b807b135Ae675A5a963CA"]]],
+  ];
+  return (
+    <footer className="px-5 pb-8 sm:px-8">
+      <div className="mx-auto max-w-[1280px] overflow-hidden rounded-[32px] px-7 pb-8 pt-12 sm:px-12" style={{ background: "#192837", color: "#F2F2EE" }}>
+        <div className="grid gap-12 md:grid-cols-[1.4fr_2fr]">
+          <div>
+            <div className="flex items-center gap-2.5">
+              <svg width="28" height="28" viewBox="0 0 256 256" fill="none" aria-hidden><path d="M 64 128 L 64.5 128 L 32 95 L 0 64 L 0 0 L 64 0 L 128 64 L 128 64.5 L 161 32 L 192 0 L 256 0 L 256 64 L 192 128 L 128 128 L 128 192 L 96 223 L 63.5 256 L 0 256 L 0 192 Z M 256 192 L 224 223 L 191.5 256 L 128 256 L 128 192 L 192 128 L 256 128 Z" fill="#F2F2EE" /></svg>
+              <span style={{ fontFamily: "var(--font-heading)", fontSize: 22 }}>Leashed<span style={{ color: "#9b7bf0" }}>.</span></span>
+            </div>
+            <p className="mt-4 max-w-xs text-sm leading-relaxed" style={{ opacity: 0.6 }}>Give AI the keys to your treasury. Keep the leash.</p>
+            <Link href="/app" className="mt-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-110" style={{ background: "#7342E2" }}>
+              Launch the App <ArrowRightCircle size={16} />
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+            {cols.map(([title, links]) => (
+              <div key={title}>
+                <p className="text-xs font-semibold uppercase tracking-widest" style={{ opacity: 0.45 }}>{title}</p>
+                <ul className="mt-4 space-y-2.5 text-sm">
+                  {links.map(([l, h]) => (
+                    <li key={l}><NavLink href={h} className="inline-flex items-center gap-1 transition-opacity hover:opacity-60">{l}{h.startsWith("http") && <ArrowUpRight size={13} style={{ opacity: 0.5 }} />}</NavLink></li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t pt-6 text-xs" style={{ borderColor: "rgba(242,242,238,0.12)", opacity: 0.55 }}>
+          <span>{"© 2026 Leashed · Built for the QoreChain hackathon"}</span>
+          <span>{"Testnet only · No real funds · MIT licensed"}</span>
+        </div>
+      </div>
+    </footer>
   );
 }
