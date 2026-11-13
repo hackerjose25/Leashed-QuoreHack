@@ -1,0 +1,18 @@
+{
+  "name": "ops",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@qorechain/sdk": "^0.14.0",
+    "dotenv": "^16.4.7",
+    "viem": "^2.21.55"
+  },
+  "type": "module",
+  "private": true
+}

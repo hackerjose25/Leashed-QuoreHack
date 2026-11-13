@@ -1,0 +1,12 @@
+node_modules/
+.env
+.env.local
+contracts/artifacts/
+contracts/cache/
+contracts/typechain-types/
+contracts/coverage/
+web/.next/
+*.key
+ops/.env
+ops/node_modules/
+.claude/settings.local.json
