@@ -48,6 +48,13 @@ Running log of decisions, progress and facts verified so far. Newest entries at 
 - Wrote `ops/` scripts (new-account, register, window, status, deploy-vault) on @qorechain/sdk 0.14.0. **First real run worked**: owner + agent unified accounts created, both ML-DSA keys registered, owner window opened.
 - Claude's sandbox can't reach the testnet (TLS issue), so the user runs `ops/` scripts and pastes the output.
 
+## Organizer answers (Discord, ~12 Nov)
+- **Scoring (100):** works as described 25 · QoreChain tech usage (verified in repo + on chain) 25 · PQ correctness & security 20 · originality 15 · clarity/UX/docs 15. 70+ = solid on every line. Video + README are how jurors verify "works" and tech usage → clear and complete over polished.
+- **Two-stage QCAI audit** (stated for the Post-Quantum dApp track; worth doing for us too): run contracts through the dashboard QCAI Contract Auditor, fix, run again; deliver both public report links + README changelog mapping each finding → change (explain kept findings / false positives).
+- **Agent with its own account:** fine. List up to 5 testnet addresses on the project page; README says which does what. Agent needs its own ML-DSA-87 key (native lane) and its own EVM window (EVM lane) — we have both.
+- **Testnet:** Diana will not be reset before judging ends 15 Dec; upgrades keep state and are announced.
+- **Q-Day Drill:** open to all categories; register on the project page before 17 Nov 23:59 UTC. Any successful tx from the drill account during the drill counts (hybrid native transfer OK); a real project action is better.
+
 ## Accounts (public addresses only — never put keys here)
 | Role | qor1 address | 0x address | ML-DSA registered | Notes |
 |---|---|---|---|---|
