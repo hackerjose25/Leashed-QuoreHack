@@ -206,24 +206,28 @@ export default function Dashboard() {
 
         <div className="grid gap-5 lg:grid-cols-5">
           {/* Agent chat */}
-          <Card title="Agent" icon={Bot} i={3} className="flex flex-col lg:col-span-3" right={<span className="text-xs" style={{ opacity: 0.5 }}>Claude · tools simulate before sending</span>}>
-            <div ref={chatBox} className="flex-1 space-y-3 overflow-y-auto pr-1" style={{ minHeight: 380, maxHeight: 540 }}>
+          <Card title="Agent" icon={Bot} i={3} className="flex flex-col self-start lg:sticky lg:top-5 lg:col-span-3 lg:h-[max(540px,calc(100vh-312px))] lg:max-h-[760px]" right={<span className="text-xs" style={{ opacity: 0.5 }}>Claude · tools simulate before sending</span>}>
+            <div ref={chatBox} className="flex min-h-[420px] flex-1 flex-col gap-3 overflow-y-auto pr-1 lg:min-h-0">
               {turns.length === 0 && (
-                <div className="space-y-2">
-                  <p className="flex items-center gap-2 text-sm" style={{ opacity: 0.6 }}><Sparkles size={14} style={{ color: ACCENT_SOFT }} /> Ask the agent to pay a vendor. Try one:</p>
+                <div className="m-auto w-full max-w-2xl py-6 text-center">
+                  <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl" style={{ background: "rgba(115,66,226,0.22)", color: ACCENT_SOFT, boxShadow: "0 0 40px rgba(115,66,226,0.35)" }}><Sparkles size={24} /></span>
+                  <p style={{ fontFamily: "var(--font-heading)", fontSize: 24, letterSpacing: "-0.01em" }}>Ask Leashed to pay someone</p>
+                  <p className="mt-1 mb-6 text-sm" style={{ opacity: 0.55 }}>Every payment is checked against the vault before anything is sent.</p>
+                  <div className="grid gap-2.5 text-left sm:grid-cols-2">
                   {EXAMPLES.map((e, i) => (
-                    <motion.button key={e} variants={rise} initial="hidden" animate="visible" custom={i + 4} whileHover={{ x: 4 }} onClick={() => send(e)}
-                      className="block w-full rounded-2xl p-3 text-left text-sm transition-colors hover:bg-white/10"
+                    <motion.button key={e} variants={rise} initial="hidden" animate="visible" custom={i + 4} whileHover={{ y: -3 }} onClick={() => send(e)}
+                      className="block h-full w-full rounded-2xl p-3.5 text-left text-sm leading-snug transition-colors hover:bg-white/10"
                       style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(236,234,246,0.07)" }}>
-                      {e.length > 110 ? e.slice(0, 110) + "…" : e}
+                      {e.length > 90 ? e.slice(0, 90) + "…" : e}
                     </motion.button>
                   ))}
+                  </div>
                 </div>
               )}
               <AnimatePresence initial={false}>
                 {turns.map((m, i) => (
                   <motion.div key={i} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }}
-                    className={m.role === "user" ? "ml-10 rounded-2xl rounded-br-md p-3 text-sm text-white" : "mr-10 text-sm"}
+                    className={m.role === "user" ? "max-w-[80%] self-end rounded-2xl rounded-br-md px-4 py-3 text-sm text-white" : "max-w-[88%] self-start text-sm"}
                     style={m.role === "user" ? { background: ACCENT } : undefined}>
                     {m.events?.filter((e) => ["propose_payment", "execute_approved"].includes(e.tool)).map((e, j) => (
                       <div key={j} className="mb-2 flex items-start gap-2 rounded-2xl p-3 text-xs"
@@ -248,7 +252,7 @@ export default function Dashboard() {
                 </div>
               )}
             </div>
-            <form className="mt-4 flex gap-2" onSubmit={(e) => { e.preventDefault(); send(input); }}>
+            <form className="mt-4 flex gap-2 border-t pt-4" style={{ borderColor: "rgba(255,255,255,0.07)" }} onSubmit={(e) => { e.preventDefault(); send(input); }}>
               <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="e.g. Pay Acme Design 80 fUSD for icons"
                 className="flex-1 rounded-full px-5 py-3 text-sm outline-none transition focus:ring-2"
                 style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(236,234,246,0.1)", ["--tw-ring-color" as string]: "rgba(115,66,226,0.35)" }} />
