@@ -54,7 +54,7 @@ Running log of decisions, progress and facts verified so far. Newest entries at 
 | Owner/CFO | qor139tww2lgnls9vucxdmq02s6cass60d3ukctyze | _TBD_ | ? | QoreX mobile wallet, 100 QOR |
 | Owner (unified, ops) | qor1xej57n223fmthypae2h7g3um4w4adswu3pc5wp | 0x36654F4d4a8A76bb903dcAAfe4479BabAbd6c1DC | **yes** (tx E99A89CC…8379) | Vault owner/CFO. Funded 10 QOR. Window opened 13 Nov (tx 4388746F…EE44): 17,280 blocks from height 9,997,353, 20 txs, 3 QOR, unscoped |
 | Agent operator | qor17eysm9ywfj9tcgayhnrfn3r43xwljhh04ccq3g | 0xf6490d948e4C8aBC23a4BCC699C475899dF95EeF | **yes** (dilithium5, possession proven) | Unified (eth_secp256k1), created 13 Nov via ops/new-account.mjs |
-| Drill account | _TBD_ | _TBD_ | no | Fresh, throwaway |
+| Drill account | qor1hdz92mycj3h7tcncsjx7uaxpaurjhgh9fuel5y | 0xbB44556C98946FE5E278848Dee74C1eF072Ba2E5 | **yes** (dilithium5, possession proven, tx DC46E510…5E86) | Created 13 Nov, funded 5 QOR from QoreX (tx 4B78F808…AC9F). Fresh, throwaway. **Form not yet submitted (closes 17 Nov 23:59).** |
 
 ## Deployed contracts (testnet)
 | Contract | Address | Tx | Date |
