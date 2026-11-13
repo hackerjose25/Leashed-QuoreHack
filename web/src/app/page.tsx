@@ -183,16 +183,17 @@ const LEASHES = [
 function WhatItDoes() {
   const inView = { initial: "hidden", whileInView: "visible", viewport: { once: true, amount: 0.25 } } as const;
   return (
-    <section id="what" className="mx-auto max-w-[1280px] px-5 py-24 sm:px-8 sm:py-32">
-      <motion.p variants={fadeUp} {...inView} custom={0} className="text-sm font-semibold uppercase tracking-widest" style={{ color: "#7342E2" }}>What it does</motion.p>
-      <motion.h2 variants={fadeUp} {...inView} custom={1} className="mt-3 max-w-3xl" style={h2Style}>
+    <section id="what" className="relative mx-auto max-w-[1280px] px-5 py-24 sm:px-8 sm:py-32">
+      <video className="what-coins" src="/coins.webm" autoPlay muted loop playsInline aria-hidden />
+      <motion.p variants={fadeUp} {...inView} custom={0} className="relative z-10 text-sm font-semibold uppercase tracking-widest" style={{ color: "#7342E2" }}>What it does</motion.p>
+      <motion.h2 variants={fadeUp} {...inView} custom={1} className="relative z-10 mt-3 max-w-xl" style={h2Style}>
         An AI treasurer that can pay, but can&apos;t go rogue.
       </motion.h2>
-      <motion.p variants={fadeUp} {...inView} custom={2} className="mt-5 max-w-2xl" style={{ fontSize: "clamp(0.95rem, 2.2vw, 1.1rem)", lineHeight: 1.65, opacity: 0.75 }}>
+      <motion.p variants={fadeUp} {...inView} custom={2} className="relative z-10 mt-5 max-w-xl" style={{ fontSize: "clamp(0.95rem, 2.2vw, 1.1rem)", lineHeight: 1.65, opacity: 0.75 }}>
         Leashed lets an AI agent handle everyday vendor payments from an on-chain vault, while two independent leashes make sure it can only ever do what you allowed.
       </motion.p>
 
-      <div className="mt-14 grid gap-5 md:grid-cols-3">
+      <div className="relative z-10 mt-14 grid gap-5 md:grid-cols-3">
         {STEPS.map(({ Icon, n, t, d }, i) => (
           <motion.div key={n} variants={fadeUp} {...inView} custom={i} whileHover={{ y: -6 }} className="p-7" style={card}>
             <div className="flex items-center justify-between">
@@ -205,7 +206,7 @@ function WhatItDoes() {
         ))}
       </div>
 
-      <div className="mt-5 grid gap-5 md:grid-cols-2">
+      <div className="relative z-10 mt-5 grid gap-5 md:grid-cols-2">
         {LEASHES.map(({ Icon, tag, t, items }, i) => (
           <motion.div key={tag} variants={fadeUp} {...inView} custom={i} className="relative overflow-hidden p-8"
             style={{ ...card, background: i ? "#192837" : "#fff", color: i ? "#F2F2EE" : "#192837" }}>
