@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 :root {
+  --font-heading: 'Helvetica Now Display Bold', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --color-text: #192837;
+  --color-accent: #7342E2;
+  --color-login-bg: #F2F2EE;
   --background: #0b0d12;
   --foreground: #e8eaf0;
 }
