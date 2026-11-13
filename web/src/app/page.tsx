@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { ArrowRightCircle, Zap, LockKeyhole, Fingerprint, Menu, X } from "lucide-react";
 
@@ -43,7 +43,28 @@ function CtaButtons({ onClick }: { onClick?: () => void }) {
   );
 }
 
-const iconStyle: React.CSSProperties = { display: "inline-block", verticalAlign: "middle", position: "relative", top: -2, color: "#192837" };
+const iconStyle: React.CSSProperties = { display: "inline-block", width: "0.8em", height: "0.8em", verticalAlign: "middle", position: "relative", top: "-0.08em", color: "#7342E2" };
+
+type Live = { treasury?: { balance: string; remainingToday: string }; window?: { live?: boolean; remaining_txs?: string }; history?: unknown[] };
+function LiveStats() {
+  const [d, setD] = useState<Live | null>(null);
+  useEffect(() => { fetch("/api/state").then((r) => r.json()).then(setD).catch(() => {}); }, []);
+  const items: [string, string][] = [
+    [d?.treasury ? `${Number(d.treasury.balance).toLocaleString()} fUSD` : "—", "in the vault"],
+    [d?.treasury ? `${Number(d.treasury.remainingToday).toLocaleString()} fUSD` : "—", "agent can still spend today"],
+    [d?.window ? (d.window.live ? `${d.window.remaining_txs} txs` : "closed") : "—", "left on the PQC leash"],
+  ];
+  return (
+    <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={5} className="mt-auto flex flex-wrap gap-3 pt-12">
+      {items.map(([v, l]) => (
+        <div key={l} className="rounded-2xl px-5 py-3.5" style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(25,40,55,0.08)", backdropFilter: "blur(10px)" }}>
+          <p style={{ fontFamily: "var(--font-heading)", fontSize: 22, letterSpacing: "-0.01em" }}>{v}</p>
+          <p className="text-xs" style={{ opacity: 0.6 }}>{l}</p>
+        </div>
+      ))}
+    </motion.div>
+  );
+}
 
 export default function Landing() {
   const [open, setOpen] = useState(false);
@@ -54,8 +75,11 @@ export default function Landing() {
 
       {/* Navbar */}
       <nav className="relative z-10 mx-auto flex max-w-[1280px] items-center justify-between px-5 py-4 sm:px-8 sm:py-5">
-        <Link href="/" aria-label="Leashed home"><Logo /></Link>
-        <div className="hidden items-center gap-8 md:flex">
+        <Link href="/" aria-label="Leashed home" className="flex items-center gap-2.5">
+          <Logo />
+          <span style={{ fontFamily: "var(--font-heading)", fontSize: 22, letterSpacing: "-0.02em" }}>Leashed<span style={{ color: "#7342E2" }}>.</span></span>
+        </Link>
+        <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex">
           {NAV.map((n) => (
             <NavLink key={n.label} href={n.href} className="text-sm font-medium transition-opacity hover:opacity-60">{n.label}</NavLink>
           ))}
@@ -74,7 +98,7 @@ export default function Landing() {
               style={{ width: "min(88vw, 360px)", height: "100dvh", background: "#CFC8C5", boxShadow: "-12px 0 48px rgba(25,40,55,0.18)" }}
               initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ ease: EASE, duration: 0.45 }}>
               <div className="flex items-center justify-between">
-                <Logo />
+                <span className="flex items-center gap-2.5"><Logo /><span style={{ fontFamily: "var(--font-heading)", fontSize: 20 }}>Leashed<span style={{ color: "#7342E2" }}>.</span></span></span>
                 <button aria-label="Close menu" onClick={() => setOpen(false)}><X size={26} color="#192837" /></button>
               </div>
               <div className="my-5 h-px w-full" style={{ background: "rgba(25,40,55,0.15)" }} />
@@ -92,27 +116,47 @@ export default function Landing() {
       </AnimatePresence>
 
       {/* Hero */}
-      <main className="relative z-10 mx-auto max-w-[1280px] px-5 sm:px-8" style={{ paddingTop: "clamp(40px, 8vw, 72px)" }}>
-        <div style={{ maxWidth: 560 }}>
-          <motion.h1 variants={fadeUp} initial="hidden" animate="visible" custom={0}
-            style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.65rem, 5vw, 3rem)", lineHeight: 1.05, letterSpacing: "-0.01em", color: "#192837", marginBottom: 24 }}>
-            <Zap size={24} style={iconStyle} /> Let AI Run Your Treasury <LockKeyhole size={24} style={iconStyle} /> on a Post-Quantum Leash <Fingerprint size={24} style={iconStyle} />
+      <main className="relative z-10 mx-auto flex min-h-[calc(100vh-88px)] max-w-[1280px] flex-col px-5 pb-8 sm:px-8">
+        <div style={{ maxWidth: 640, paddingTop: "clamp(40px, 9vh, 96px)" }}>
+          <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0}
+            className="mb-6 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium"
+            style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(25,40,55,0.08)", backdropFilter: "blur(8px)" }}>
+            <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" style={{ background: "#22c55e" }} /><span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: "#22c55e" }} /></span>
+            Live on QoreChain testnet · Post-Quantum AI Agents
+          </motion.div>
+
+          <motion.h1 variants={fadeUp} initial="hidden" animate="visible" custom={1}
+            style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(3.5rem, 10vw, 7rem)", lineHeight: 0.95, letterSpacing: "-0.04em", color: "#192837" }}>
+            Leashed<span style={{ color: "#7342E2" }}>.</span>
           </motion.h1>
 
-          <motion.p variants={fadeUp} initial="hidden" animate="visible" custom={1}
-            style={{ fontFamily: "var(--font-body)", fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)", lineHeight: 1.65, opacity: 0.8, maxWidth: 560 }}>
-            Zero blind trust, total control. Leashed&apos;s AI agent pays your vendors on-chain, bounded by a smart contract and an ML-DSA key it can never touch.
+          <motion.h2 variants={fadeUp} initial="hidden" animate="visible" custom={2}
+            style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.4rem, 3.2vw, 2.25rem)", lineHeight: 1.15, letterSpacing: "-0.01em", color: "#192837", marginTop: 20, marginBottom: 20, textWrap: "balance" }}>
+            <Zap style={iconStyle} /> Let AI run your treasury<br className="hidden sm:block" />{" "}
+            on a post-quantum leash <LockKeyhole style={iconStyle} />
+          </motion.h2>
+
+          <motion.p variants={fadeUp} initial="hidden" animate="visible" custom={3}
+            style={{ fontFamily: "var(--font-body)", fontSize: "clamp(0.95rem, 2.2vw, 1.1rem)", lineHeight: 1.65, opacity: 0.8, maxWidth: 520 }}>
+            Zero blind trust, total control. An AI agent pays your vendors on-chain, bounded by a smart contract and an ML-DSA key it can never touch.
           </motion.p>
 
-          <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={2} className="mt-8">
+          <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={4} className="mt-9 flex flex-wrap items-center gap-3">
             <motion.div whileHover={{ scale: 1.04, filter: "brightness(1.1)" }} whileTap={{ scale: 0.96 }} className="inline-block">
               <Link href="/app" className="flex items-center justify-between font-semibold text-white"
                 style={{ background: "#7342E2", borderRadius: 50, padding: "17px 24px", fontFamily: "var(--font-body)", fontSize: "clamp(0.9rem, 2vw, 1rem)", boxShadow: "0 4px 24px rgba(115,66,226,0.28)", minWidth: 210, gap: 32 }}>
                 Launch the App <ArrowRightCircle size={20} />
               </Link>
             </motion.div>
+            <motion.a whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }} href={`${GITHUB}/blob/main/docs/ARCHITECTURE.md`} target="_blank" rel="noreferrer"
+              className="inline-flex items-center gap-2 font-semibold"
+              style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(25,40,55,0.1)", borderRadius: 50, padding: "16px 22px", fontSize: "clamp(0.9rem, 2vw, 1rem)", backdropFilter: "blur(8px)" }}>
+              <Fingerprint size={18} /> How it works
+            </motion.a>
           </motion.div>
         </div>
+
+        <LiveStats />
       </main>
     </div>
   );
