@@ -36,11 +36,11 @@ const rise: Variants = {
 };
 
 const glass: React.CSSProperties = {
-  background: "rgba(18,20,32,0.62)",
+  background: "rgba(18,20,32,0.5)",
   border: "1px solid rgba(255,255,255,0.08)",
   boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 20px 50px rgba(0,0,0,0.35)",
-  backdropFilter: "blur(18px)",
-  WebkitBackdropFilter: "blur(18px)",
+  backdropFilter: "blur(6px)",
+  WebkitBackdropFilter: "blur(6px)",
 };
 
 function Card({ title, icon: Icon, children, className = "", i = 0, right }: { title: string; icon: React.ElementType; children: React.ReactNode; className?: string; i?: number; right?: React.ReactNode }) {
@@ -134,7 +134,7 @@ export default function Dashboard() {
 
   return (
     <div className="relative min-h-screen" style={{ fontFamily: "var(--font-body)", color: INK }}>
-      <div className="dash-bg" aria-hidden><div className="grid" /><div className="blob b1" /><div className="blob b2" /><div className="blob b3" /></div>
+      <div className="dash-bg" aria-hidden><div className="grid" /><div className="blob b1" /><div className="blob b2" /><div className="blob b3" /><video className="coins" src="/coins.webm" autoPlay muted loop playsInline /></div>
 
       <div className="relative z-10 mx-auto max-w-[1280px] px-5 pb-10 sm:px-8">
         {/* Top bar */}
