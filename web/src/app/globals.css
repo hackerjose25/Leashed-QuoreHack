@@ -19,3 +19,21 @@ body {
   background: var(--background);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
+
+/* ---- Landing page ---- */
+.glow { position: absolute; border-radius: 9999px; filter: blur(110px); pointer-events: none; opacity: .55; }
+.grid-bg {
+  background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%);
+}
+.text-gradient { background: linear-gradient(180deg, #fff 30%, #a5a1c9 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.text-accent { background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.glass { background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02)); border: 1px solid rgba(255,255,255,.09); backdrop-filter: blur(14px); }
+@keyframes floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-10px) } }
+.floaty { animation: floaty 6s ease-in-out infinite; }
+@keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(52,211,153,.6) } 100% { box-shadow: 0 0 0 10px rgba(52,211,153,0) } }
+.live-dot { animation: pulse-ring 1.6s infinite; }
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .floaty, .live-dot { animation: none } .reveal { opacity: 1; transform: none; transition: none } }
