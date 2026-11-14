@@ -15,7 +15,8 @@ key stolen, server hacked) can only make payments the rules allow, for as long a
 | Network | QoreChain testnet `qorechain-diana` · EVM chain id `9800` |
 | Live demo | _TODO: Vercel URL_ |
 | Video | _TODO_ |
-| LeashedVault | [`0xd995932bb8e0d6ee2234d4be3989052e8c339bf4`](https://explore.qore.network/address/0xd995932bb8e0d6ee2234d4be3989052e8c339bf4) |
+| LeashedVault v2 | [`0xb4d06cef7bded2122210442bf87d79ec80e13cb8`](https://explore.qore.network/address/0xb4d06cef7bded2122210442bf87d79ec80e13cb8): checks the agent's PQC key on-chain via the `0x…0A02` precompile |
+| LeashedVault v1 | [`0xd995932bb8e0d6ee2234d4be3989052e8c339bf4`](https://explore.qore.network/address/0xd995932bb8e0d6ee2234d4be3989052e8c339bf4): original deploy, now the Q-Day drill target (emptied into v2) |
 | fUSD (fest token, 6 dp) | [`0x97143B771D34ddb9130b807b135Ae675A5a963CA`](https://explore.qore.network/address/0x97143B771D34ddb9130b807b135Ae675A5a963CA) |
 | A real agent payment | [`0xcef9155f…e855`](https://explore.qore.network/tx/0xcef9155f9c2be95c82b9de18e4cbf67e56b06f80a4ef76d7fe2ec7061da3e855): 200 fUSD → CloudHost, paid by the AI agent's account |
 
@@ -41,12 +42,19 @@ allows**, and nothing else.
 |---|---|---|
 | Enforced by | [`LeashedVault.sol`](contracts/contracts/LeashedVault.sol) | QoreChain EVM authorization window (`MsgOpenEVMWindow`) |
 | Bounds | **how much, and to whom** | **where, how often, how long** |
-| Rules | vendor whitelist · per-payment cap · per-vendor cap · daily cap · owner approval above a threshold · pause | `allowed_targets` = the vault only · max transactions · max blocks · native-QOR budget |
+| Rules | vendor whitelist · per-payment cap · per-vendor cap · daily cap · owner approval above a threshold · pause · **operator must hold a registered ML-DSA-87 key, checked on-chain** | `allowed_targets` = the vault only · max transactions · max blocks · native-QOR budget |
 | Who can change it | the **owner** account only (`onlyOwner`) | only the holder of the agent account's **ML-DSA-87** key: the owner, never the server |
 
 **Why both?** The window's value cap counts **native QOR only**. A whitelisted token contract lets through any
 token amount. So the window bounds *where* the agent can act and the contract bounds *how much*. Each one covers
 the other's blind spot.
+
+**The contract checks the post-quantum key too (v2).** On every `pay`, `request` and `executeApproved`, and when
+the owner appoints an operator, the vault asks QoreChain's `pqcKeyStatus` precompile (`0x…0A02`) whether the
+operator account has a registered ML-DSA-87 key, and refuses with `NoPqcKey` if it doesn't. The constructor
+checks both the owner and the operator, so the deployment transaction itself calls the precompile (tx
+[`0x261bc066…26ba`](https://explore.qore.network/tx/0x261bc066048be00509a1a88bb42cf926df1a2264a4aca0183043b46f707026ba)). The check fails closed: a failed call counts as
+"not registered".
 
 **The agent cannot renew its own leash.** The server holds only the agent's ECDSA key. Opening a window needs an
 ML-DSA-87 signature, which the owner holds. When the window closes, the next agent transaction is refused by the
@@ -123,7 +131,10 @@ All chain work goes through [`@qorechain/sdk`](ops/package.json) (TypeScript) an
 | EVM authorization window, **scoped** (`allowed_targets`) | agent leash: [`ops/window.mjs`](ops/window.mjs) | tx `6DA1E974…BD03` |
 | Window status REST (`/qorechain/pqc/v1/evm_window/{addr}`) | live leash card on the dashboard | [`web/src/lib/chain.ts`](web/src/lib/chain.ts) |
 | Fest test tokens: fUSD bank coin → ERC-20 (`MsgConvertCoin`) | funding the vault: [`ops/convert.mjs`](ops/convert.mjs) | tx `D31A0DE4…4790` |
-| Solidity on the EVM lane | [`LeashedVault.sol`](contracts/contracts/LeashedVault.sol) | deploy tx `0xa45918fc…ec12` |
+| Solidity on the EVM lane | [`LeashedVault.sol`](contracts/contracts/LeashedVault.sol) | v2 deploy tx `0x261bc066…26ba` |
+| **Solidity PQC key status** (precompile `0x…0A02`) | `isPqcRegistered()` gates every operator action and the constructor | v2 deploy tx `0x261bc066…26ba` |
+| ML-KEM-1024 key registry (QoreSeal) | owner's encryption key: [`ops/kem-register.mjs`](ops/kem-register.mjs) | tx `A613157D…3309` |
+| Native AMM swap | [`ops/swap.mjs`](ops/swap.mjs) (QOR → fUSD, pool 2) | tx `D0642959…5E89` |
 
 ### What was hard
 
@@ -148,7 +159,7 @@ All chain work goes through [`@qorechain/sdk`](ops/package.json) (TypeScript) an
 | Q-Day drill (throwaway) | `qor1hdz92mycj3h7tcncsjx7uaxpaurjhgh9fuel5y` | `0xbB44556C98946FE5E278848Dee74C1eF072Ba2E5` | ✅ registered |
 | QoreX funding wallet | `qor139tww2lgnls9vucxdmq02s6cass60d3ukctyze` | — | ✅ (registered by QoreX) |
 
-Vault policy v1: **1000** fUSD per payment · **2000** per day · owner approval **above 500** · vendors capped at 500.
+Vault policy (v1 and v2): **1000** fUSD per payment · **2000** per day · owner approval **above 500** · vendors capped at 500.
 
 ## The dashboard
 
@@ -159,7 +170,7 @@ explorer links. The agent chat shows every payment as a ✓ or ✗ card with the
 ## Repo
 
 ```text
-contracts/   Hardhat · LeashedVault.sol · 14 tests
+contracts/   Hardhat · LeashedVault.sol · 18 tests (mock pqcKeyStatus precompile at 0x…0A02)
 ops/         Node scripts on @qorechain/sdk: accounts, PQC keys, windows, deploy, fund, pay, approve, drill
 web/         Next.js 15 · landing page · /app dashboard · /api/agent (Claude + tools) · /api/state
 docs/        ARCHITECTURE.md · PLAN.md · cover.jpg
@@ -170,7 +181,7 @@ AI_USAGE.md  how AI built this: workflow, generated work, human contribution
 ## Run it
 
 ```bash
-# contracts: 14 tests (happy paths + every revert)
+# contracts: 18 tests (happy paths + every revert + PQC key checks)
 cd contracts && npm install && npx hardhat test
 
 # chain ops (secrets live only in gitignored ops/.env)
@@ -207,8 +218,13 @@ LeashedVault
     ✔ bad request id
   emergency pause
     ✔ freezes agent spending, owner can still withdraw
+  post-quantum key check (pqcKeyStatus precompile)
+    ✔ reads registration from the precompile
+    ✔ cannot be deployed with an operator that has no PQC key
+    ✔ operator cannot spend once its PQC key is gone
+    ✔ owner can only appoint an operator with a PQC key
 
-  14 passing
+  18 passing
 ```
 
 ## Not done yet

@@ -5,12 +5,24 @@ const { time } = require("@nomicfoundation/hardhat-network-helpers");
 const usd = (n) => ethers.parseUnits(String(n), 6);
 const memo = ethers.id("invoice-001");
 const DESIGN = ethers.encodeBytes32String("design");
+const PQC = "0x0000000000000000000000000000000000000A02";
+
+// Install the mock pqcKeyStatus precompile at its real address and return a handle to it.
+async function installPqc() {
+  const mock = await (await ethers.getContractFactory("MockPqcKeyStatus")).deploy();
+  const code = await ethers.provider.getCode(mock.target);
+  await ethers.provider.send("hardhat_setCode", [PQC, code]);
+  return ethers.getContractAt("MockPqcKeyStatus", PQC);
+}
 
 describe("LeashedVault", () => {
-  let token, vault, owner, agent, acme, attacker;
+  let token, vault, owner, agent, acme, attacker, pqc;
 
   beforeEach(async () => {
     [owner, agent, acme, attacker] = await ethers.getSigners();
+    pqc = await installPqc();
+    await pqc.set(owner.address, true);
+    await pqc.set(agent.address, true);
     token = await (await ethers.getContractFactory("MockUSD")).deploy();
     // perTxCap 1000, dailyCap 2000, approval above 500
     vault = await (await ethers.getContractFactory("LeashedVault")).deploy(
@@ -123,6 +135,33 @@ describe("LeashedVault", () => {
         .to.be.revertedWithCustomError(vault, "Paused");
       await vault.withdraw(owner.address, usd(100));
       expect(await token.balanceOf(owner.address)).to.equal(usd(100));
+    });
+  });
+  describe("post-quantum key check (pqcKeyStatus precompile)", () => {
+    it("reads registration from the precompile", async () => {
+      expect(await vault.isPqcRegistered(agent.address)).to.equal(true);
+      expect(await vault.isPqcRegistered(attacker.address)).to.equal(false);
+    });
+
+    it("cannot be deployed with an operator that has no PQC key", async () => {
+      const F = await ethers.getContractFactory("LeashedVault");
+      await expect(F.deploy(token.target, attacker.address, usd(1000), usd(2000), usd(500)))
+        .to.be.revertedWithCustomError(vault, "NoPqcKey").withArgs(attacker.address);
+    });
+
+    it("operator cannot spend once its PQC key is gone", async () => {
+      await pqc.set(agent.address, false);
+      await expect(vault.connect(agent).pay(acme.address, usd(10), memo))
+        .to.be.revertedWithCustomError(vault, "NoPqcKey").withArgs(agent.address);
+      await expect(vault.connect(agent).request(acme.address, usd(600), memo))
+        .to.be.revertedWithCustomError(vault, "NoPqcKey");
+    });
+
+    it("owner can only appoint an operator with a PQC key", async () => {
+      await expect(vault.setOperator(attacker.address))
+        .to.be.revertedWithCustomError(vault, "NoPqcKey").withArgs(attacker.address);
+      await pqc.set(attacker.address, true);
+      await expect(vault.setOperator(attacker.address)).to.emit(vault, "OperatorChanged");
     });
   });
 });

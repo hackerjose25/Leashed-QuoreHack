@@ -229,7 +229,7 @@ function Footer() {
   const cols: [string, [string, string][]][] = [
     ["Product", [["Dashboard", "/app"], ["AI agent", "/app"], ["What it does", "#what"]]],
     ["Resources", [["GitHub", GITHUB], ["Architecture", `${GITHUB}/blob/main/docs/ARCHITECTURE.md`], ["Build plan", `${GITHUB}/blob/main/docs/PLAN.md`]]],
-    ["Network", [["Explorer", "https://explore.qore.network"], ["Vault contract", "https://explore.qore.network/address/0xd995932bb8e0d6ee2234d4be3989052e8c339bf4"], ["fUSD token", "https://explore.qore.network/address/0x97143B771D34ddb9130b807b135Ae675A5a963CA"]]],
+    ["Network", [["Explorer", "https://explore.qore.network"], ["Vault contract", "https://explore.qore.network/address/0xb4d06cef7bded2122210442bf87d79ec80e13cb8"], ["fUSD token", "https://explore.qore.network/address/0x97143B771D34ddb9130b807b135Ae675A5a963CA"]]],
   ];
   return (
     <footer className="px-5 pb-8 sm:px-8">

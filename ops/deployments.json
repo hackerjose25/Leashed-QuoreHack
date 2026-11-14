@@ -1,6 +1,6 @@
 {
   "network": "qorechain-diana (9800)",
-  "vault": "0xd995932bb8e0d6ee2234d4be3989052e8c339bf4",
+  "vault": "0xb4d06cef7bded2122210442bf87d79ec80e13cb8",
   "token": {
     "address": "0x97143B771D34ddb9130b807b135Ae675A5a963CA",
     "name": "Fest USD",
@@ -20,30 +20,35 @@
     "dailyCap": 2000,
     "approvalThreshold": 500
   },
-  "deployTx": "0xa45918fcda89a857f27f99ffd64835bc0072add6424cb6f429db9fd56139ec12",
-  "block": 9997819,
-  "date": "2026-11-13T06:37:21.923Z",
+  "deployTx": "0x261bc066048be00509a1a88bb42cf926df1a2264a4aca0183043b46f707026ba",
+  "block": 10068409,
+  "date": "2026-11-14T10:33:29.627Z",
+  "v1": {
+    "vault": "0xd995932bb8e0d6ee2234d4be3989052e8c339bf4",
+    "deployTx": "0xa45918fcda89a857f27f99ffd64835bc0072add6424cb6f429db9fd56139ec12",
+    "note": "Q-Day drill target; emptied into v2"
+  },
   "vendors": [
     {
       "name": "Acme Design",
       "category": "design",
       "cap": 500,
       "address": "0x2a16e7f0B13C2800a94e0801776925D476eE8bb5",
-      "tx": "0xe65f87a2990afc6204b53207b43d39e9afaa4d66d63bf15fe22ae15cd5a7f9a9"
+      "tx": "0x3a12eb6825516c104c0ef6239ca9ae54010902580dd47bfa524d0f4a699ba6a9"
     },
     {
       "name": "CloudHost",
       "category": "infra",
       "cap": 500,
       "address": "0x68516a032c684022f3eb115CEf4251046eE730D5",
-      "tx": "0x2469622b3c862c8d3cbad062cecb75216db32a6a393a710c2ba42d7355b99998"
+      "tx": "0x051629fdd501b1dae5a9c07bb57130510dcbaef2be5f6fc6f19a7636efd3608c"
     },
     {
       "name": "DevAgency",
       "category": "dev",
       "cap": 500,
       "address": "0xdbA8d8e2daDf643EB676d7D5Be8BF17784C939a2",
-      "tx": "0x29431aef0690383f6fa54746b30a8141da375c67eacfe1ff0e5666bea9b10333"
+      "tx": "0xcfc51c5243e37f9dfe8ab8a651b5cf45bd6801e5d5919b697dea32da9605af34"
     }
   ]
 }

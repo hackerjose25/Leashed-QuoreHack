@@ -13,7 +13,7 @@ const INK = "#ECEAF6";
 const ACCENT_SOFT = "#b9a3f5";
 
 type State = {
-  treasury: { vault: string; balance: string; spentToday: string; remainingToday: string; paused: boolean; owner: string; operator: string; policy: { perTxCap: string; dailyCap: string; approvalThreshold: string } };
+  treasury: { vault: string; balance: string; spentToday: string; remainingToday: string; paused: boolean; owner: string; operator: string; operatorPqc?: boolean | null; policy: { perTxCap: string; dailyCap: string; approvalThreshold: string } };
   vendors: { address: string; name: string; category: string; cap: string; active: boolean }[];
   requests: { id: number; vendorName: string; amount: string; state: string; expiry: number }[];
   history: { event: string; tx: string; block: number; vendor?: string; amount?: string; requestId?: number }[];
@@ -185,6 +185,12 @@ export default function Dashboard() {
               </div>
             ) : "…"}
             <p className="mt-3 text-sm" style={{ opacity: 0.6 }}>Whitelisted vendors only ({state?.vendors.length ?? "…"}) · fUSD</p>
+            {t && t.operatorPqc !== undefined && (
+              <p className="mt-1.5 flex items-center gap-1.5 text-sm" style={{ color: t.operatorPqc ? "#4ade80" : "#f87171" }}>
+                {t.operatorPqc ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
+                Agent PQC key {t.operatorPqc ? "verified on-chain" : "missing: agent cannot spend"}
+              </p>
+            )}
           </Card>
 
           <Card title="Leash 2 · PQC window" icon={KeyRound} i={2} right={w && <span className="flex items-center gap-1.5 text-xs font-semibold"><LiveDot on={!!w.live} />{w.live ? "live" : "closed"}</span>}>

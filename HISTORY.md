@@ -82,6 +82,10 @@ Running log of decisions, progress and facts verified so far. Newest entries at 
 | fUSD token (Fest USD, 6 dec, verified) | 0x97143B771D34ddb9130b807b135Ae675A5a963CA | — | faucet |
 | LeashedVault v1 | 0xd995932bb8e0d6ee2234d4be3989052e8c339bf4 | 0xa45918fcda89a857f27f99ffd64835bc0072add6424cb6f429db9fd56139ec12 | 13 Nov |
 
+| LeashedVault **v2** (PQC key check via precompile 0x…0A02) | 0xb4d06cef7bded2122210442bf87d79ec80e13cb8 | 0x261bc066048be00509a1a88bb42cf926df1a2264a4aca0183043b46f707026ba | 14 Nov |
+
+v2 (14 Nov): `isPqcRegistered()` calls pqcKeyStatus precompile (live test: agent/owner registered=true alg 1 pubkey 2592 B; 0xdEaD false). Constructor checks owner+operator; onlyOperator + setOperator check operator. 18/18 tests (mock precompile via hardhat_setCode). Migration (`ops/migrate-v1-v2.mjs`): 3 vendors re-added (same addresses), 200 fUSD withdrawn from v1 and sent to v2. Owner window opened briefly (1000 blocks, tx C638BC0B…84F2) then closed (E815DBAF…8584). Agent window re-scoped to v2 (close 305703B2…2762, open 6FF72E1A…486B). v1 kept as the registered Q-Day drill target (`drill-day.mjs` scopes to v1). v1 details in `ops/deployments.v1.json`.
+
 Vault v1 policy: perTx 1000 · daily 2000 · approval above 500 fUSD. Owner 0x3665…c1DC, operator (agent) 0xf649…5EeF. Details in `ops/deployments.json`.
 
 Vault v1 vendors (added 13 Nov, cap 500 each): Acme Design 0x2a16…8bb5 (tx 0xe65f…f9a9), CloudHost 0x6851…30D5 (tx 0x2469…9998), DevAgency 0xdbA8…39a2 (tx 0x2943…0333). `fund 3000` first reverted (ERC20InsufficientBalance: owner had no fUSD). QoreX can't send fest tokens, so `ops/qorex-convert.mjs` converted 1000 fUSD from the QoreX wallet's bank balance straight to ERC-20 at the owner 0x (Cosmos tx D31A0DE4…4790; QoreX's ML-DSA key = canonical derivation). Owner then funded the vault: tx 0x1567…8b6b. **Vault balance 1000 fUSD.**

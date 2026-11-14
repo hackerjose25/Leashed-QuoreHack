@@ -5,9 +5,16 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
+/// @dev QoreChain precompile: post-quantum (ML-DSA-87) key registration status of an account.
+interface IPqcKeyStatus {
+    function pqcKeyStatus(address account) external view returns (bool registered, uint8 algorithmId, bytes memory pubkey);
+}
+
 /// @title LeashedVault
 /// @notice Treasury vault an AI operator can spend from, but only inside owner-set policy.
 /// @dev Layer-2 leash. Layer-1 (protocol) is the QoreChain EVM authorization window scoped to this contract.
+///      v2: every operator action also checks, on-chain via the pqcKeyStatus precompile, that the operator
+///      account holds a registered post-quantum key — an operator without one can never spend.
 contract LeashedVault is ReentrancyGuard {
     using SafeERC20 for IERC20;
 
@@ -68,6 +75,11 @@ contract LeashedVault is ReentrancyGuard {
 
     uint256 private constant NONE = type(uint256).max;
 
+    /// @notice QoreChain pqcKeyStatus precompile.
+    address public constant PQC_KEY_STATUS = 0x0000000000000000000000000000000000000a02;
+
+    error NoPqcKey(address account);
+
     modifier onlyOwner() {
         if (msg.sender != owner) revert NotOwner();
         _;
@@ -75,6 +87,7 @@ contract LeashedVault is ReentrancyGuard {
 
     modifier onlyOperator() {
         if (msg.sender != operator) revert NotOperator();
+        if (!isPqcRegistered(msg.sender)) revert NoPqcKey(msg.sender);
         _;
     }
 
@@ -84,6 +97,8 @@ contract LeashedVault is ReentrancyGuard {
     }
 
     constructor(IERC20 _token, address _operator, uint256 _perTxCap, uint256 _dailyCap, uint256 _approvalThreshold) {
+        if (!isPqcRegistered(msg.sender)) revert NoPqcKey(msg.sender);
+        if (!isPqcRegistered(_operator)) revert NoPqcKey(_operator);
         token = _token;
         owner = msg.sender;
         operator = _operator;
@@ -107,6 +122,7 @@ contract LeashedVault is ReentrancyGuard {
     }
 
     function setOperator(address _operator) external onlyOwner {
+        if (!isPqcRegistered(_operator)) revert NoPqcKey(_operator);
         operator = _operator;
         emit OperatorChanged(_operator);
     }
@@ -176,6 +192,16 @@ contract LeashedVault is ReentrancyGuard {
     }
 
     // ---------------- Views ----------------
+
+    /// @notice True if `account` has a registered post-quantum key (read from the pqcKeyStatus precompile).
+    /// @dev Fails closed: a failed call or malformed answer counts as "not registered".
+    function isPqcRegistered(address account) public view returns (bool) {
+        (bool ok, bytes memory ret) =
+            PQC_KEY_STATUS.staticcall(abi.encodeCall(IPqcKeyStatus.pqcKeyStatus, (account)));
+        if (!ok || ret.length < 96) return false;
+        (bool registered,,) = abi.decode(ret, (bool, uint8, bytes));
+        return registered;
+    }
 
     function today() public view returns (uint256) {
         return block.timestamp / 1 days;

@@ -17,14 +17,15 @@ if (utcDay !== "2026-11-18" && !process.argv.includes("--force")) {
 
 const drill = await loadAccount("drill");
 console.log(`Drill account ${drill.cosmos} / ${drill.evm}`);
-const result = { startedAt: now.toISOString(), drill: { cosmos: drill.cosmos, evm: drill.evm }, vault: deployments.vault };
+const DRILL_VAULT = deployments.v1?.vault ?? deployments.vault; // registered drill target = vault v1
+const result = { startedAt: now.toISOString(), drill: { cosmos: drill.cosmos, evm: drill.evm }, vault: DRILL_VAULT };
 
 // 1) Scoped window (skip if one is already live)
 const w = await windowStatus(drill.cosmos);
 if (w?.live) {
   console.log(`Window already live: ${w.remaining_txs} txs, ${w.remaining_blocks} blocks left, targets=${(w.allowed_targets || []).join(",") || "ANY"}`);
 } else {
-  const msg = openEvmWindowMsg({ sender: drill.cosmos, blocks: 17280, maxTxs: 25, maxValue: String(1_000_000), allowedTargets: [deployments.vault] });
+  const msg = openEvmWindowMsg({ sender: drill.cosmos, blocks: 17280, maxTxs: 25, maxValue: String(1_000_000), allowedTargets: [DRILL_VAULT] });
   const res = await send(drill, [msg], 500_000, "hybrid");
   console.log(`Opened vault-only window (25 txs, 1 QOR budget). tx: ${res.transactionHash}`);
   result.windowTx = res.transactionHash;
