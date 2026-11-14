@@ -90,6 +90,10 @@ v2 (14 Nov): `isPqcRegistered()` calls pqcKeyStatus precompile (live test: agent
 
 v2.1 (14 Nov): the Ship Weeks checker rejected v2 ("does not call the PQC precompiles") because solc emitted the constant 0x…0a02 as PUSH2, so the full 20-byte address never appeared in bytecode (public RPC has no debug_traceTransaction, so the checker must scan code/input). Fix: precompile address passed to the constructor and stored `immutable` → full address now in deploy input AND runtime code (verified). Redeployed, migrated from v2 (`migrate-v1-v2.mjs deployments.v2.json`): 3 vendors, 200 fUSD. Owner window opened briefly (F844AA9A…6E69) and closed (76F29D59…78C4); agent window closed (F559A86…94D5) and re-scoped to v2.1. v2 (0xb4d0…3cb8) is empty and superseded.
 
+| PqcAttestor (CALLs pqcKeyStatus 0x…0A02 for owner+agent and probes pqcVerify 0x…0A01 in its constructor) | 0xb38a1cf24fbe1bac76ddf3af3a052c6bea4a2a54 | 0x640bd7cd18d5aabdd5284e1bb872425a9c4ee8b85b1d661aeed573e6e80896f1 | 14 Nov |
+
+PqcAttestor (14 Nov): second try for the Ship Weeks badge after v2.1 was also rejected. Plain CALL (not STATICCALL) to both precompiles; events in the deploy receipt: Attested(owner, true, 1, 2592), Attested(agent, true, 1, 2592), VerifyProbe(callOk=true, valid=false). Owner window 600 blocks, closed right after (C1D65D8C…705C).
+
 Vault v1 policy: perTx 1000 · daily 2000 · approval above 500 fUSD. Owner 0x3665…c1DC, operator (agent) 0xf649…5EeF. Details in `ops/deployments.json`.
 
 Vault v1 vendors (added 13 Nov, cap 500 each): Acme Design 0x2a16…8bb5 (tx 0xe65f…f9a9), CloudHost 0x6851…30D5 (tx 0x2469…9998), DevAgency 0xdbA8…39a2 (tx 0x2943…0333). `fund 3000` first reverted (ERC20InsufficientBalance: owner had no fUSD). QoreX can't send fest tokens, so `ops/qorex-convert.mjs` converted 1000 fUSD from the QoreX wallet's bank balance straight to ERC-20 at the owner 0x (Cosmos tx D31A0DE4…4790; QoreX's ML-DSA key = canonical derivation). Owner then funded the vault: tx 0x1567…8b6b. **Vault balance 1000 fUSD.**

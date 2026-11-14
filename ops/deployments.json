@@ -55,5 +55,10 @@
       "address": "0xdbA8d8e2daDf643EB676d7D5Be8BF17784C939a2",
       "tx": "0x2441f417cd5988414c539c5b81786a50b836648c678bd25aa980a6c52db91003"
     }
-  ]
+  ],
+  "pqcAttestor": {
+    "address": "0xb38a1cf24fbe1bac76ddf3af3a052c6bea4a2a54",
+    "deployTx": "0x640bd7cd18d5aabdd5284e1bb872425a9c4ee8b85b1d661aeed573e6e80896f1",
+    "block": 10069403
+  }
 }
