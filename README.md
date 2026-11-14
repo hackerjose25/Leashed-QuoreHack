@@ -15,7 +15,7 @@ key stolen, server hacked) can only make payments the rules allow, for as long a
 | Network | QoreChain testnet `qorechain-diana` · EVM chain id `9800` |
 | Live demo | _TODO: Vercel URL_ |
 | Video | _TODO_ |
-| LeashedVault v2 | [`0xb4d06cef7bded2122210442bf87d79ec80e13cb8`](https://explore.qore.network/address/0xb4d06cef7bded2122210442bf87d79ec80e13cb8): checks the agent's PQC key on-chain via the `0x…0A02` precompile |
+| LeashedVault v2 | [`0xeca1e419d4f4f3a11c38dfd377c4198b7b87d997`](https://explore.qore.network/address/0xeca1e419d4f4f3a11c38dfd377c4198b7b87d997): checks the agent's PQC key on-chain via the `0x…0A02` precompile (address passed to the constructor and stored `immutable`) |
 | LeashedVault v1 | [`0xd995932bb8e0d6ee2234d4be3989052e8c339bf4`](https://explore.qore.network/address/0xd995932bb8e0d6ee2234d4be3989052e8c339bf4): original deploy, now the Q-Day drill target (emptied into v2) |
 | fUSD (fest token, 6 dp) | [`0x97143B771D34ddb9130b807b135Ae675A5a963CA`](https://explore.qore.network/address/0x97143B771D34ddb9130b807b135Ae675A5a963CA) |
 | A real agent payment | [`0xcef9155f…e855`](https://explore.qore.network/tx/0xcef9155f9c2be95c82b9de18e4cbf67e56b06f80a4ef76d7fe2ec7061da3e855): 200 fUSD → CloudHost, paid by the AI agent's account |
@@ -51,9 +51,10 @@ the other's blind spot.
 
 **The contract checks the post-quantum key too (v2).** On every `pay`, `request` and `executeApproved`, and when
 the owner appoints an operator, the vault asks QoreChain's `pqcKeyStatus` precompile (`0x…0A02`) whether the
-operator account has a registered ML-DSA-87 key, and refuses with `NoPqcKey` if it doesn't. The constructor
-checks both the owner and the operator, so the deployment transaction itself calls the precompile (tx
-[`0x261bc066…26ba`](https://explore.qore.network/tx/0x261bc066048be00509a1a88bb42cf926df1a2264a4aca0183043b46f707026ba)). The check fails closed: a failed call counts as
+operator account has a registered ML-DSA-87 key, and refuses with `NoPqcKey` if it doesn't. The precompile address is a constructor
+argument stored as an `immutable`, and the constructor checks both the owner and the operator, so the deployment
+transaction itself calls the precompile (tx
+[`0x87abf0a4…ea47`](https://explore.qore.network/tx/0x87abf0a49284e2e089523542955a9b2d29d7af80d95cba93cffe8797af39ea47)). The check fails closed: a failed call counts as
 "not registered".
 
 **The agent cannot renew its own leash.** The server holds only the agent's ECDSA key. Opening a window needs an
@@ -131,8 +132,8 @@ All chain work goes through [`@qorechain/sdk`](ops/package.json) (TypeScript) an
 | EVM authorization window, **scoped** (`allowed_targets`) | agent leash: [`ops/window.mjs`](ops/window.mjs) | tx `6DA1E974…BD03` |
 | Window status REST (`/qorechain/pqc/v1/evm_window/{addr}`) | live leash card on the dashboard | [`web/src/lib/chain.ts`](web/src/lib/chain.ts) |
 | Fest test tokens: fUSD bank coin → ERC-20 (`MsgConvertCoin`) | funding the vault: [`ops/convert.mjs`](ops/convert.mjs) | tx `D31A0DE4…4790` |
-| Solidity on the EVM lane | [`LeashedVault.sol`](contracts/contracts/LeashedVault.sol) | v2 deploy tx `0x261bc066…26ba` |
-| **Solidity PQC key status** (precompile `0x…0A02`) | `isPqcRegistered()` gates every operator action and the constructor | v2 deploy tx `0x261bc066…26ba` |
+| Solidity on the EVM lane | [`LeashedVault.sol`](contracts/contracts/LeashedVault.sol) | v2 deploy tx `0x87abf0a4…ea47` |
+| **Solidity PQC key status** (precompile `0x…0A02`) | `isPqcRegistered()` gates every operator action and the constructor | v2 deploy tx `0x87abf0a4…ea47` |
 | ML-KEM-1024 key registry (QoreSeal) | owner's encryption key: [`ops/kem-register.mjs`](ops/kem-register.mjs) | tx `A613157D…3309` |
 | Native AMM swap | [`ops/swap.mjs`](ops/swap.mjs) (QOR → fUSD, pool 2) | tx `D0642959…5E89` |
 

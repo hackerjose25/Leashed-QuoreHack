@@ -37,7 +37,8 @@ if (w.allowed_targets.length) throw new Error("Owner window is scoped — contra
 
 const artifact = JSON.parse(fs.readFileSync(new URL("../contracts/artifacts/contracts/LeashedVault.sol/LeashedVault.json", import.meta.url)));
 const u = (n) => parseUnits(String(n), decimals);
-const args = [TOKEN, agent.evm, u(1000), u(2000), u(500)]; // perTxCap, dailyCap, approvalThreshold
+const PQC_KEY_STATUS = "0x0000000000000000000000000000000000000a02"; // QoreChain pqcKeyStatus precompile
+const args = [TOKEN, agent.evm, u(1000), u(2000), u(500), PQC_KEY_STATUS]; // perTxCap, dailyCap, approvalThreshold, precompile
 
 const wallet = createWalletClient({ account: privateKeyToAccount(owner.privateKey), chain: qore, transport: http() });
 console.log(`Deploying LeashedVault (owner ${owner.evm}, operator ${agent.evm}) ...`);

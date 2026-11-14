@@ -1,11 +1,13 @@
-// node migrate-v1-v2.mjs — one-off: copy vendors from vault v1 into v2 (same addresses) and move v1's fUSD into v2.
-// Owner needs a live UNSCOPED window. v1 stays deployed (it is the Q-Day drill target) but ends up empty.
+// node migrate-v1-v2.mjs [deployments.vN.json] — copy vendors from an older vault into the current one (same addresses)
+// and move the old vault's fUSD across. Default source: deployments.v1.json.
+// Owner needs a live UNSCOPED window. The old vault stays deployed but ends up empty.
 import fs from "node:fs";
 import { erc20Abi, stringToHex } from "viem";
 import { loadAccount } from "./lib.mjs";
 import { pub, walletFor, loadDeployments, saveDeployments, vaultAbi } from "./evm.mjs";
 
-const v1 = JSON.parse(fs.readFileSync(new URL("./deployments.v1.json", import.meta.url)));
+const srcFile = process.argv[2] || "deployments.v1.json";
+const v1 = JSON.parse(fs.readFileSync(new URL(`./${srcFile}`, import.meta.url)));
 const dep = loadDeployments();
 const abi = vaultAbi(); // v2 ABI is a superset of v1 for everything used here
 const owner = await loadAccount("owner");
@@ -21,7 +23,8 @@ async function write(address, functionName, args, useAbi = abi) {
 }
 
 console.log(`v1 ${v1.vault} → v2 ${dep.vault}`);
-dep.v1 = { vault: v1.vault, deployTx: v1.deployTx, note: "Q-Day drill target; emptied into v2" };
+dep.v1 = v1.v1 ?? { vault: v1.vault, deployTx: v1.deployTx, note: "Q-Day drill target; emptied into the newer vault" };
+if (v1.v1) dep.previous = { vault: v1.vault, deployTx: v1.deployTx, note: "superseded; emptied into this vault" };
 dep.vendors = dep.vendors || [];
 for (const v of v1.vendors || []) {
   if (dep.vendors.find((x) => x.address === v.address)) { console.log(`  ${v.name} already in v2`); continue; }

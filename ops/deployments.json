@@ -1,6 +1,6 @@
 {
   "network": "qorechain-diana (9800)",
-  "vault": "0xb4d06cef7bded2122210442bf87d79ec80e13cb8",
+  "vault": "0xeca1e419d4f4f3a11c38dfd377c4198b7b87d997",
   "token": {
     "address": "0x97143B771D34ddb9130b807b135Ae675A5a963CA",
     "name": "Fest USD",
@@ -20,13 +20,18 @@
     "dailyCap": 2000,
     "approvalThreshold": 500
   },
-  "deployTx": "0x261bc066048be00509a1a88bb42cf926df1a2264a4aca0183043b46f707026ba",
-  "block": 10068409,
-  "date": "2026-11-14T10:33:29.627Z",
+  "deployTx": "0x87abf0a49284e2e089523542955a9b2d29d7af80d95cba93cffe8797af39ea47",
+  "block": 10068667,
+  "date": "2026-11-14T10:39:36.920Z",
   "v1": {
     "vault": "0xd995932bb8e0d6ee2234d4be3989052e8c339bf4",
     "deployTx": "0xa45918fcda89a857f27f99ffd64835bc0072add6424cb6f429db9fd56139ec12",
     "note": "Q-Day drill target; emptied into v2"
+  },
+  "previous": {
+    "vault": "0xb4d06cef7bded2122210442bf87d79ec80e13cb8",
+    "deployTx": "0x261bc066048be00509a1a88bb42cf926df1a2264a4aca0183043b46f707026ba",
+    "note": "superseded; emptied into this vault"
   },
   "vendors": [
     {
@@ -34,21 +39,21 @@
       "category": "design",
       "cap": 500,
       "address": "0x2a16e7f0B13C2800a94e0801776925D476eE8bb5",
-      "tx": "0x3a12eb6825516c104c0ef6239ca9ae54010902580dd47bfa524d0f4a699ba6a9"
+      "tx": "0x5a7dacfc215d96fe5aa8e0625db7eaf245b1328f501601b4fa38aa396fed555b"
     },
     {
       "name": "CloudHost",
       "category": "infra",
       "cap": 500,
       "address": "0x68516a032c684022f3eb115CEf4251046eE730D5",
-      "tx": "0x051629fdd501b1dae5a9c07bb57130510dcbaef2be5f6fc6f19a7636efd3608c"
+      "tx": "0xa1cd4ef8631d80243062c81e77accd0a4d501e9e900018f643a53ded34676369"
     },
     {
       "name": "DevAgency",
       "category": "dev",
       "cap": 500,
       "address": "0xdbA8d8e2daDf643EB676d7D5Be8BF17784C939a2",
-      "tx": "0xcfc51c5243e37f9dfe8ab8a651b5cf45bd6801e5d5919b697dea32da9605af34"
+      "tx": "0x2441f417cd5988414c539c5b81786a50b836648c678bd25aa980a6c52db91003"
     }
   ]
 }

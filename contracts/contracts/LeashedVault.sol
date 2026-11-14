@@ -75,8 +75,9 @@ contract LeashedVault is ReentrancyGuard {
 
     uint256 private constant NONE = type(uint256).max;
 
-    /// @notice QoreChain pqcKeyStatus precompile.
-    address public constant PQC_KEY_STATUS = 0x0000000000000000000000000000000000000a02;
+    /// @notice QoreChain pqcKeyStatus precompile (0x0000000000000000000000000000000000000A02 on QoreChain).
+    /// @dev Passed in and stored as an immutable so the full 20-byte address is visible in the deploy input and code.
+    address public immutable PQC_KEY_STATUS;
 
     error NoPqcKey(address account);
 
@@ -96,7 +97,15 @@ contract LeashedVault is ReentrancyGuard {
         _;
     }
 
-    constructor(IERC20 _token, address _operator, uint256 _perTxCap, uint256 _dailyCap, uint256 _approvalThreshold) {
+    constructor(
+        IERC20 _token,
+        address _operator,
+        uint256 _perTxCap,
+        uint256 _dailyCap,
+        uint256 _approvalThreshold,
+        address _pqcKeyStatus
+    ) {
+        PQC_KEY_STATUS = _pqcKeyStatus;
         if (!isPqcRegistered(msg.sender)) revert NoPqcKey(msg.sender);
         if (!isPqcRegistered(_operator)) revert NoPqcKey(_operator);
         token = _token;

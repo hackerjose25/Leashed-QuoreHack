@@ -25,6 +25,11 @@
     "internalType": "uint256",
     "name": "_approvalThreshold",
     "type": "uint256"
+   },
+   {
+    "internalType": "address",
+    "name": "_pqcKeyStatus",
+    "type": "address"
    }
   ],
   "stateMutability": "nonpayable",

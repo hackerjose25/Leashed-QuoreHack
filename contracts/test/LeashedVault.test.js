@@ -26,7 +26,7 @@ describe("LeashedVault", () => {
     token = await (await ethers.getContractFactory("MockUSD")).deploy();
     // perTxCap 1000, dailyCap 2000, approval above 500
     vault = await (await ethers.getContractFactory("LeashedVault")).deploy(
-      token.target, agent.address, usd(1000), usd(2000), usd(500)
+      token.target, agent.address, usd(1000), usd(2000), usd(500), PQC
     );
     await token.mint(vault.target, usd(50000));
     await vault.setVendor(acme.address, true, usd(500), DESIGN, "Acme Design");
@@ -145,7 +145,7 @@ describe("LeashedVault", () => {
 
     it("cannot be deployed with an operator that has no PQC key", async () => {
       const F = await ethers.getContractFactory("LeashedVault");
-      await expect(F.deploy(token.target, attacker.address, usd(1000), usd(2000), usd(500)))
+      await expect(F.deploy(token.target, attacker.address, usd(1000), usd(2000), usd(500), PQC))
         .to.be.revertedWithCustomError(vault, "NoPqcKey").withArgs(attacker.address);
     });
 

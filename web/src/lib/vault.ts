@@ -9,11 +9,11 @@ import abiJson from "./vaultAbi.json";
 import { qoreTestnet, fetchEvmWindow } from "./chain";
 
 export const abi = abiJson as Abi;
-export const VAULT = (process.env.NEXT_PUBLIC_VAULT_ADDRESS || "0xb4d06cef7bded2122210442bf87d79ec80e13cb8") as Address;
+export const VAULT = (process.env.NEXT_PUBLIC_VAULT_ADDRESS || "0xeca1e419d4f4f3a11c38dfd377c4198b7b87d997") as Address;
 export const DECIMALS = 6;
 export const AGENT_ADDRESS = (process.env.NEXT_PUBLIC_AGENT_ADDRESS || "0xf6490d948e4C8aBC23a4BCC699C475899dF95EeF") as Address;
 // Block the vault was deployed in; event scans start here.
-const FROM_BLOCK = BigInt(process.env.VAULT_FROM_BLOCK || "10068409");
+const FROM_BLOCK = BigInt(process.env.VAULT_FROM_BLOCK || "10068667");
 
 export const pub = createPublicClient({ chain: qoreTestnet, transport: http() });
 const NONE_ID = BigInt(2) ** BigInt(256) - BigInt(1); // vault uses uint256.max for "no request"
