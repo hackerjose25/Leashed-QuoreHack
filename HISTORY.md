@@ -62,6 +62,12 @@ Running log of decisions, progress and facts verified so far. Newest entries at 
 - Vault listing is fine. The bot calls drain-style functions on it from the drill account (withdraw, withdrawAll, emergencyWithdraw, withdraw(amount), withdrawTo, execute). Refusals show as **blocked** = good for us. They only reach the contract if the drill window covers it.
 - **Our plan:** on 18 Nov open the drill window scoped to the vault only (`--targets <vault>`, few txs, ~1 QOR). Drain calls reach LeashedVault and revert (`NotOwner`/`NotOperator`). Keep the drill balance small. Normal tx = a real project action (fUSD convert into the vault, or a hybrid QOR send). Capture the attack log for the video and README.
 
+## Ship Weeks badges (14 Nov)
+- First hybrid transaction: **earned**.
+- First QoreSeal key: owner registered an ML-KEM-1024 key (`ops/kem-register.mjs`, keypair derived from the owner mnemonic) — tx A613157DE098B326D0A1559FF0F80496BCB8ED4305B8555CE08A0D1F75903309.
+- First swap in a pool: owner swapped 1 QOR → 0.099 fUSD in native AMM pool 2 (fUSD/uqor, ~10 QOR per fUSD) (`ops/swap.mjs`) — tx D06429595054FEB4398E11CEDE94538DEABA5A9CDF70E46049213B4E91635E89.
+- First contract with a PQC check: planned as LeashedVault v2 calling the pqcKeyStatus precompile `0x…0A02` (`pqcKeyStatus(address) returns (bool registered, uint8 algorithmId, bytes pubkey)`, documented in @qorechain/sdk).
+
 ## Accounts (public addresses only — never put keys here)
 | Role | qor1 address | 0x address | ML-DSA registered | Notes |
 |---|---|---|---|---|
