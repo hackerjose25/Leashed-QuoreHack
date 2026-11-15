@@ -7,6 +7,7 @@ Team switched to a second project; Leashed resumes after the Q-Day Drill.
 - **18 Nov UTC (05:30 IST onward):** run `node ops/drill-day.mjs` (vault-only window on **v1** + normal tx) → submit the printed hash on the project page; save the attack log.
 - **Badge "First contract with a PQC check":** checker said "does not call the PQC precompiles" for v2 (0x261bc066…) and v2.1 (0x87abf0a4…). Third try PqcAttestor deploy tx 0x640bd7cd18d5aabdd5284e1bb872425a9c4ee8b85b1d661aeed573e6e80896f1 hit "Too many attempts" (rate limit) — not checked yet. Retry once; if rejected, ask organizers how the checker detects calls.
 - Confirm the drill registration on the project page was submitted (user filled both fields; submit not confirmed in chat).
+- **Bugs found while building Dead Drop (fix before deploying Leashed):** (1) Next.js 15.1.6 is blocked by Vercel as vulnerable → upgrade to 15.5.29; (2) explorer `/tx/` links need the **Cosmos tx hash** (no 0x), not the EVM hash — README + dashboard links are broken; map via REST `ethereum_tx.ethereumTxHash`; (3) `getHistory` eth_getLogs must page in <10,000-block chunks (node cap).
 - Still to do: AI key for the agent chat (Claude vs Gemini undecided) → test chat; Vercel deploy; fUSD from faucet (vault has 200); QCAI two-stage audit; owner controls in browser; persistent blocked-attempt log (Redis); attack evidence; video; fill team names in AI_USAGE.md §4; tick network features (AMM pools, QoreSeal/KEM registry, Solidity PQC key status).
 
 ## Key dates (UTC, 2026)
