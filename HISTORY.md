@@ -2,6 +2,13 @@
 
 Running log of decisions, progress and facts verified so far. Newest entries at the bottom of each section. Update this after every work session.
 
+## ⏸ PARKED 15 Nov — resume here (after the drill, 18 Nov)
+Team switched to a second project; Leashed resumes after the Q-Day Drill.
+- **18 Nov UTC (05:30 IST onward):** run `node ops/drill-day.mjs` (vault-only window on **v1** + normal tx) → submit the printed hash on the project page; save the attack log.
+- **Badge "First contract with a PQC check":** checker said "does not call the PQC precompiles" for v2 (0x261bc066…) and v2.1 (0x87abf0a4…). Third try PqcAttestor deploy tx 0x640bd7cd18d5aabdd5284e1bb872425a9c4ee8b85b1d661aeed573e6e80896f1 hit "Too many attempts" (rate limit) — not checked yet. Retry once; if rejected, ask organizers how the checker detects calls.
+- Confirm the drill registration on the project page was submitted (user filled both fields; submit not confirmed in chat).
+- Still to do: AI key for the agent chat (Claude vs Gemini undecided) → test chat; Vercel deploy; fUSD from faucet (vault has 200); QCAI two-stage audit; owner controls in browser; persistent blocked-attempt log (Redis); attack evidence; video; fill team names in AI_USAGE.md §4; tick network features (AMM pools, QoreSeal/KEM registry, Solidity PQC key status).
+
 ## Key dates (UTC, 2026)
 - 14 Nov 12:00 — Workshop 2 · 20 Nov 16:30 — Workshop 3 · 27 Nov 16:30 — Workshop 4 (submission clinic)
 - **17 Nov 23:59 — Q-Day Drill registration closes**
