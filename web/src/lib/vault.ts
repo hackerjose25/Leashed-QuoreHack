@@ -61,7 +61,13 @@ export async function getRequests(vendors?: Vendor[]): Promise<PaymentRequest[]>
 
 export async function getHistory(vendors?: Vendor[]) {
   const vs = vendors ?? (await getVendors());
-  const logs = await pub.getLogs({ address: VAULT, fromBlock: FROM_BLOCK, toBlock: "latest" });
+  const latest = await pub.getBlockNumber();
+  const logs = [];
+  // The node caps eth_getLogs at 10,000 blocks per query, so scan in chunks.
+  for (let from = FROM_BLOCK; from <= latest; from += LOG_CHUNK) {
+    const to = from + LOG_CHUNK - BigInt(1) < latest ? from + LOG_CHUNK - BigInt(1) : latest;
+    logs.push(...(await pub.getLogs({ address: VAULT, fromBlock: from, toBlock: to })));
+  }
   const events = parseEventLogs({ abi, logs, strict: false });
   return events.map((e) => {
     const args = (e.args ?? {}) as Record<string, unknown>;
@@ -76,6 +82,8 @@ export async function getHistory(vendors?: Vendor[]) {
     };
   }).reverse();
 }
+
+const LOG_CHUNK = BigInt(9_999);
 
 export async function getWindow() {
   try {
