@@ -18,7 +18,7 @@ key stolen, server hacked) can only make payments the rules allow, for as long a
 | LeashedVault v2 | [`0xeca1e419d4f4f3a11c38dfd377c4198b7b87d997`](https://explore.qore.network/address/0xeca1e419d4f4f3a11c38dfd377c4198b7b87d997): checks the agent's PQC key on-chain via the `0x…0A02` precompile (address passed to the constructor and stored `immutable`) |
 | LeashedVault v1 | [`0xd995932bb8e0d6ee2234d4be3989052e8c339bf4`](https://explore.qore.network/address/0xd995932bb8e0d6ee2234d4be3989052e8c339bf4): original deploy, now the Q-Day drill target (emptied into v2) |
 | fUSD (fest token, 6 dp) | [`0x97143B771D34ddb9130b807b135Ae675A5a963CA`](https://explore.qore.network/address/0x97143B771D34ddb9130b807b135Ae675A5a963CA) |
-| A real agent payment | [`0xcef9155f…e855`](https://explore.qore.network/tx/0xcef9155f9c2be95c82b9de18e4cbf67e56b06f80a4ef76d7fe2ec7061da3e855): 200 fUSD → CloudHost, paid by the AI agent's account |
+| A real agent payment | [`0xcef9155f…e855`](https://explore.qore.network/tx/FD244C8B0ADE0C3B9BFA86BC9961EFD46C4733A4F4EB179E54D18710F427212D): 200 fUSD → CloudHost, paid by the AI agent's account |
 
 **Status.** Everything marked ✅ was checked against the live testnet (a transaction, a revert or a REST read), not
 just inferred from the code. What isn't built yet is listed under [Not done yet](#not-done-yet) rather than left
@@ -54,7 +54,7 @@ the owner appoints an operator, the vault asks QoreChain's `pqcKeyStatus` precom
 operator account has a registered ML-DSA-87 key, and refuses with `NoPqcKey` if it doesn't. The precompile address is a constructor
 argument stored as an `immutable`, and the constructor checks both the owner and the operator, so the deployment
 transaction itself calls the precompile (tx
-[`0x87abf0a4…ea47`](https://explore.qore.network/tx/0x87abf0a49284e2e089523542955a9b2d29d7af80d95cba93cffe8797af39ea47)). The check fails closed: a failed call counts as
+[`0x87abf0a4…ea47`](https://explore.qore.network/tx/E073EE74DC1DB0D812F63F2645E047D2E4BED5C0360F71FBAA75D9CB50F701B5)). The check fails closed: a failed call counts as
 "not registered".
 
 **The agent cannot renew its own leash.** The server holds only the agent's ECDSA key. Opening a window needs an
