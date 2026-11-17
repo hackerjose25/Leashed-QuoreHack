@@ -16,7 +16,7 @@ type State = {
   treasury: { vault: string; balance: string; spentToday: string; remainingToday: string; paused: boolean; owner: string; operator: string; operatorPqc?: boolean | null; policy: { perTxCap: string; dailyCap: string; approvalThreshold: string } };
   vendors: { address: string; name: string; category: string; cap: string; active: boolean }[];
   requests: { id: number; vendorName: string; amount: string; state: string; expiry: number }[];
-  history: { event: string; tx: string; block: number; vendor?: string; amount?: string; requestId?: number }[];
+  history: { event: string; tx: string; cosmosTx?: string | null; block: number; vendor?: string; amount?: string; requestId?: number }[];
   window: { found?: boolean; live?: boolean; remaining_txs?: string; remaining_blocks?: string; max_txs?: string; allowed_targets?: string[]; expiry_height?: string };
   blocked: { at: string; action: string; vendor: string; amount: string; reason: string }[];
 };
@@ -24,8 +24,9 @@ type ToolEvent = { tool: string; input: Record<string, unknown>; result: Record<
 type Turn = { role: "user" | "agent"; text: string; events?: ToolEvent[] };
 
 const short = (s: string) => `${s.slice(0, 6)}…${s.slice(-4)}`;
-const Tx = ({ hash }: { hash: string }) => (
-  <a className="inline-flex items-center gap-0.5 font-mono hover:underline" style={{ color: ACCENT_SOFT }} href={`${EXPLORER}/tx/${hash}`} target="_blank" rel="noreferrer">
+// The explorer indexes by Cosmos tx hash (no 0x); fall back to the EVM hash until it is indexed.
+const Tx = ({ hash, cosmos }: { hash: string; cosmos?: string | null }) => (
+  <a className="inline-flex items-center gap-0.5 font-mono hover:underline" style={{ color: ACCENT_SOFT }} href={`${EXPLORER}/tx/${cosmos ?? hash}`} target="_blank" rel="noreferrer">
     {short(hash)}<ArrowUpRight size={11} />
   </a>
 );
@@ -241,7 +242,7 @@ export default function Dashboard() {
                         {e.result?.ok ? <CheckCircle2 size={16} className="shrink-0 text-green-400" /> : <XCircle size={16} className="shrink-0 text-red-500" />}
                         <span>
                           <b>{e.tool === "execute_approved" ? `Execute request #${String(e.input.requestId)}` : `${String(e.input.amount)} fUSD → ${String(e.input.vendor)}`}</b>{" · "}
-                          {e.result?.ok ? <>{String(e.result.status).replaceAll("_", " ")}{e.result.requestId !== undefined && ` (#${e.result.requestId})`} · <Tx hash={String(e.result.tx)} /></>
+                          {e.result?.ok ? <>{String(e.result.status).replaceAll("_", " ")}{e.result.requestId !== undefined && ` (#${e.result.requestId})`} · <Tx hash={String(e.result.tx)} cosmos={e.result.cosmosTx as string | null | undefined} /></>
                             : <span className="font-mono">{String(e.result?.reason ?? e.result?.error)}</span>}
                         </span>
                       </div>
@@ -314,7 +315,7 @@ export default function Dashboard() {
                 {state?.history.map((h) => (
                   <li key={h.tx + h.event} className="flex items-center justify-between gap-2 rounded-xl px-2 py-1.5 hover:bg-white/5">
                     <span><b>{h.event}</b>{h.amount && ` ${h.amount} fUSD`}{h.vendor && ` → ${h.vendor}`}{h.requestId !== undefined && ` #${h.requestId}`}</span>
-                    <Tx hash={h.tx} />
+                    <Tx hash={h.tx} cosmos={h.cosmosTx} />
                   </li>
                 ))}
               </ul>

@@ -6,7 +6,7 @@ import {
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import abiJson from "./vaultAbi.json";
-import { qoreTestnet, fetchEvmWindow } from "./chain";
+import { qoreTestnet, fetchEvmWindow, QORE } from "./chain";
 
 export const abi = abiJson as Abi;
 export const VAULT = (process.env.NEXT_PUBLIC_VAULT_ADDRESS || "0xeca1e419d4f4f3a11c38dfd377c4198b7b87d997") as Address;
@@ -69,12 +69,14 @@ export async function getHistory(vendors?: Vendor[]) {
     logs.push(...(await pub.getLogs({ address: VAULT, fromBlock: from, toBlock: to })));
   }
   const events = parseEventLogs({ abi, logs, strict: false });
-  return events.map((e) => {
+  const cosmos = await Promise.all(events.map((e) => cosmosTxHash(e.transactionHash)));
+  return events.map((e, i) => {
     const args = (e.args ?? {}) as Record<string, unknown>;
     const vendor = args.vendor as string | undefined;
     return {
       event: e.eventName as string,
       tx: e.transactionHash,
+      cosmosTx: cosmos[i],
       block: Number(e.blockNumber),
       vendor: vendor && (vs.find((v) => v.address.toLowerCase() === vendor.toLowerCase())?.name || vendor),
       amount: typeof args.amount === "bigint" ? fmt(args.amount) : undefined,
@@ -84,6 +86,23 @@ export async function getHistory(vendors?: Vendor[]) {
 }
 
 const LOG_CHUNK = BigInt(9_999);
+
+/** The explorer indexes txs by their Cosmos hash; map an EVM tx hash to it (null if not indexed yet). */
+const cosmosCache = new Map<string, string>();
+export async function cosmosTxHash(evmHash: string): Promise<string | null> {
+  const hit = cosmosCache.get(evmHash);
+  if (hit) return hit;
+  try {
+    const q = encodeURIComponent(`ethereum_tx.ethereumTxHash='${evmHash}'`);
+    const r = await fetch(`${QORE.rest}/cosmos/tx/v1beta1/txs?query=${q}&events=${q}`, { cache: "no-store" });
+    if (!r.ok) return null;
+    const h = (await r.json()).tx_responses?.[0]?.txhash as string | undefined;
+    if (h) cosmosCache.set(evmHash, h);
+    return h ?? null;
+  } catch {
+    return null;
+  }
+}
 
 export async function getWindow() {
   try {
@@ -134,9 +153,9 @@ export async function proposePayment(vendorAddressOrName: string, amount: string
     const receipt = await send(action, [vendor, parseUnits(amount, DECIMALS), keccak256(stringToHex(memo))]);
     if (action === "request") {
       const ev = parseEventLogs({ abi, logs: receipt.logs, eventName: "Requested" })[0] as unknown as { args: { id: bigint } };
-      return { ok: true, action, status: "pending_owner_approval", requestId: Number(ev.args.id), tx: receipt.transactionHash };
+      return { ok: true, action, status: "pending_owner_approval", requestId: Number(ev.args.id), tx: receipt.transactionHash, cosmosTx: await cosmosTxHash(receipt.transactionHash) };
     }
-    return { ok: true, action, status: "paid", tx: receipt.transactionHash };
+    return { ok: true, action, status: "paid", tx: receipt.transactionHash, cosmosTx: await cosmosTxHash(receipt.transactionHash) };
   } catch (e) {
     const reason = revertReason(e);
     if (!reason) throw e;
@@ -148,7 +167,7 @@ export async function proposePayment(vendorAddressOrName: string, amount: string
 export async function executeApproved(id: number) {
   try {
     const receipt = await send("executeApproved", [BigInt(id)]);
-    return { ok: true, status: "paid", requestId: id, tx: receipt.transactionHash };
+    return { ok: true, status: "paid", requestId: id, tx: receipt.transactionHash, cosmosTx: await cosmosTxHash(receipt.transactionHash) };
   } catch (e) {
     const reason = revertReason(e);
     if (!reason) throw e;
