@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cbom": "qorescan scan --network testnet --address qor1xej57n223fmthypae2h7g3um4w4adswu3pc5wp --address qor17eysm9ywfj9tcgayhnrfn3r43xwljhh04ccq3g --solidity ../contracts/contracts --tls evm-testnet.qore.host:443 --out ../docs/cbom/leashed.cbom.json"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +17,8 @@
     "viem": "^2.21.55"
   },
   "type": "module",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@qorechain/qorescan": "^0.1.0"
+  }
 }
