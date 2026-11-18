@@ -120,6 +120,11 @@ drill day, a window **scoped to LeashedVault only**. The bot's drain calls (`wit
 can reach the vault, and the vault refuses them because the drill account is neither owner nor operator. Results
 and the published attack log will be added here after the drill.
 
+Run on 18 Nov 2026, 12:14 UTC ([`ops/drill-result.json`](ops/drill-result.json)):
+
+- Vault-only window (25 txs, 1 QOR budget): tx [`4982A471…47CE`](https://explore.qore.network/tx/4982A47165D1C6B10FAF240CE57CE8432EF333FD39E11762FF69F257219547CE)
+- Normal transaction (0.1 QOR to the owner, hybrid ECDSA + ML-DSA-87): tx [`0AAB872B…06DA`](https://explore.qore.network/tx/0AAB872B9B9D380FD5F1E1C580A3730EFA1EC3A7372DA21EF9AAF451155B06DA)
+
 ## How it uses QoreChain ✅
 
 All chain work goes through [`@qorechain/sdk`](ops/package.json) (TypeScript) and viem on the EVM lane.

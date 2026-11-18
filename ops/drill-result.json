@@ -1,0 +1,28 @@
+{
+  "startedAt": "2026-11-18T12:14:49.962Z",
+  "drill": {
+    "cosmos": "qor1hdz92mycj3h7tcncsjx7uaxpaurjhgh9fuel5y",
+    "evm": "0xbB44556C98946FE5E278848Dee74C1eF072Ba2E5"
+  },
+  "vault": "0xd995932bb8e0d6ee2234d4be3989052e8c339bf4",
+  "windowTx": "4982A47165D1C6B10FAF240CE57CE8432EF333FD39E11762FF69F257219547CE",
+  "window": {
+    "found": true,
+    "live": true,
+    "opened_height": "10314907",
+    "expiry_height": "10332187",
+    "max_txs": "25",
+    "used_txs": "0",
+    "max_value": "1000000",
+    "used_value": "0",
+    "remaining_blocks": "17278",
+    "remaining_txs": "25",
+    "remaining_value": "1000000",
+    "native_only": false,
+    "allowed_targets": [
+      "0xd995932bb8e0d6ee2234d4be3989052e8c339bf4"
+    ]
+  },
+  "normalTx": "0AAB872B9B9D380FD5F1E1C580A3730EFA1EC3A7372DA21EF9AAF451155B06DA",
+  "finishedAt": "2026-11-18T12:15:01.273Z"
+}
